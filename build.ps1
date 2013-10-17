@@ -19,6 +19,9 @@ task Test {
 task Version {
     $v = git describe --abbrev=0 --tags
     $changeset=(git log -1 $($v + '..') --pretty=format:%H)
+    if ($changeset -eq $null -or $changeset -eq '') {
+        throw 'No changeset.  Files have been modified since commit.'
+    }
     (Get-Content "$sourceFolder\PowerDeploy.psm1") `
         | % {$_ -replace "\`$version\`$", "$version" } `
         | % {$_ -replace "\`$sha\`$", "$changeset" } `
