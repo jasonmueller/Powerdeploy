@@ -1,7 +1,7 @@
 properties {
   $buildFolder = Join-Path $PSScriptRoot '_build'
   $sourceFolder = Join-Path $PSScriptRoot 'Source'
-  $version = git describe --tags --always --long
+  $version = git describe --tags --always --dirty
 }
 
 task default -depends Build
