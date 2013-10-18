@@ -39,10 +39,13 @@ param (
 	[string]$RemotePackageTargetPath,
 	[System.Uri]$SettingsUri
 )
+	Write-Host ('='*80)
+	Write-Host 'powerdeploy $version$'
+	Write-Host ('='*80)
+
 	$ErrorActionPreference = 'Stop'
 	$deploymentId = [Guid]::NewGuid().ToString("N")
 
-	('-'*80)
 	"Beginning deployment of package '$(Split-Path $PackageArchive -Leaf)' for environment '$Environment' to $ComputerName..."
 	
 	$remoteSession = CreateRemoteSession -ComputerName $ComputerName -Credential $RemoteCredential
@@ -117,6 +120,10 @@ param (
 	[string]$Role,
 	[string]$PackageTargetPath
 )
+	Write-Host ('='*80)
+	Write-Host ('powerdeploy $version$' + "on $env:computername")
+	Write-Host ('='*80)
+
 	$ErrorActionPreference = 'Stop'
 	
 	Import-Pscx
@@ -140,7 +147,7 @@ param (
 	# Unzip the package
 	ExtractPackage $PackageArchive $extractionPath
 
-	if ($packageNameWithVersion -match '^(PD)_(?<Package>[^_]+)_(?<Version>.+)$' -eq $false) {
+	if ($packageNameWithVersion -match '^(PD_)?(?<Package>[^_]+)_(?<Version>.+)$' -eq $false) {
 		Throw "Not a valid package name."
 	}
 	$packageId = $matches.Package
