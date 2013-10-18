@@ -16,7 +16,18 @@ function GetSettingsFromUri {
             throw 'Only filesystem based settings are currently supported.'
         }
 
-        getSettingsFromEnvironmentOrGlobal $parsedUri.LocalPath $environmentName $computerName
+        $effectiveSettings = getSettingsFromEnvironmentOrGlobal $parsedUri.LocalPath $environmentName $computerName
+
+        if (!([String]::IsNullOrWhiteSpace($computer))) {
+            mergeOverrides $effectiveSettings 'Computers' $computer
+        }
+
+        if (!([String]::IsNullOrWhiteSpace($role))) {
+            mergeOverrides $effectiveSettings 'Roles' $role
+        }
+
+        $effectiveSettings.Remove('Overrides')
+        $effectiveSettings
     }
 
     function getSettingsFromEnvironmentOrGlobal(
@@ -56,6 +67,35 @@ function GetSettingsFromUri {
         & {
             . $PSScriptRoot\Includes\GetSettingsForEnvironment-FileSystemHierarchy.ps1
             GetSettingsForEnvironment -SettingsFolderPath $settingsFolderPath -EnvironmentName $environmentName
+        }
+    }
+
+    function mergeOverrides($settings, $keyName, $keyValue) {
+        Write-Verbose "Looking for $keyName overrides for $keyValue..."
+
+        $overrides = $effectiveSettings.Overrides
+        if ($overrides -ne $null -and $overrides[$keyName] -ne $null) {
+            $innerSettings = $overrides[$keyName][$keyValue]
+
+            if ($innerSettings -ne $null) {
+                Write-Verbose "Overrides were found for $keyValue."
+                mergeSettings $effectiveSettings $innerSettings
+            }
+            else {
+                Write-Warning "$keyValue was specified for $keyName override but no such settings exist.  If you expected overrides for this, ensure the overrides exist in deployment settings."
+            }        
+        } 
+        else {
+            Write-Warning "There are no overrides for the specified environment.  $keyValue overrides for $keyName will be skipped."
+        }
+    }
+
+    function mergeSettings($target, $source) {
+        foreach ($pair in $source.GetEnumerator()) {
+            if ($target[$pair.Key] -ne $null) {
+                $target[$pair.Key] = $pair.Value
+               Write-Verbose "Merging setting for $($pair.Key)."
+            }
         }
     }
 
