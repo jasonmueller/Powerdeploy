@@ -14,13 +14,19 @@
 		$packageId = $PowerDeploymentContext.Parameters.PackageId
 		$sourcePath = $PowerDeploymentContext.Parameters.ExtractedPackagePath
 		$environmentName = $PowerDeploymentContext.Parameters.EnvironmentName
+
+		$iisRegistryKeyPath = 'HKLM:\software\microsoft\InetStp'
 		
-		Write-Verbose "Running web site convention for $packageId..."
-		
+		if (!(Test-Path $iisRegistryKeyPath)) {
+			Write-Host ('IIS installation was not found. '`
+            + 'The convention will be skipped.')
+            return
+		}
+
 		$siteFound = $false
 
 		$iisVersion = Get-ItemProperty "HKLM:\software\microsoft\InetStp"
-		if ($iisVersion.MajorVerson -eq 6) {
+		if ($iisVersion.MajorVersion -eq 6) {
 			$validSiteNames = @(
 				"$packageId",
 				"$packageId-$environmentName"
@@ -51,7 +57,7 @@
 			)
 			
 			Load-WebAdministration
-			
+
 			$validSiteNames | ForEach-Object {
 				Write-Verbose "Looking for site $_..."
 				if (Test-Path $_) {
