@@ -10,7 +10,7 @@ param (
 	[string]$PackageTargetPath
 )
 	Write-Host ('='*80)
-	Write-Host ('powerdeploy $version$' + "on $env:computername")
+	Write-Host ("powerdeploy `$version`$ on $env:computername")
 	Write-Host ('='*80)
 
 	$ErrorActionPreference = 'Stop'
@@ -42,13 +42,15 @@ param (
 	$packageId = $matches.Package
 	$packageVersion = $matches.Version
 	
-	$context = BuildDeploymentContext $packageId $packageVersion $DeploymentTempRoot $Environment $extractionPath
-
 	"Installing version $packageVersion of package $packageId..."
 
-	RunConventions (Resolve-Path $PSScriptRoot\Conventions\*Convention.ps1) $context
-
+	ExecuteInstallation `
+		-PackageName $packageId `
+		-PackageVersion $packageVersion `
+		-EnvironmentName $Environment `
+		-DeployedFolderPath $extractionPath
+	
 	# Run PostDeploy
-	Remove-Module pscx -Verbose:$false
+	Remove-Module pscx -Verbose:$false -ErrorAction SilentlyContinue
 }
 

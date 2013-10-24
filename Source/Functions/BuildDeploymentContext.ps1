@@ -48,3 +48,23 @@ function BuildDeploymentContext {
 	    Settings = $settings
 	}
 }
+
+function GetDeploymentEnvironmentName {
+
+}
+
+function GetDeploymentPackageName {
+
+}
+
+function GetDeploymentFolderPath {
+
+}
+
+function GetDeploymentSourceFolderPath {
+
+}
+
+function GetDeploymentPackageVersion {
+	
+}
