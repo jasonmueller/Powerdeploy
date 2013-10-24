@@ -26,5 +26,8 @@ function ExecuteInstallation (
     
     RunConventions (Resolve-Path $PSScriptRoot\..\Conventions\*Convention.ps1) $context
 
+    Write-Host 'Installation finished.'
+
+    Write-Verbose 'Unloading installation module...'
     Remove-Module Installer -Verbose:$false -ErrorAction SilentlyContinue
 }

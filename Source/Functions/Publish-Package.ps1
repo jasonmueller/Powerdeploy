@@ -11,7 +11,7 @@ param (
 	[System.Uri]$SettingsUri
 )
 	Write-Host ('='*80)
-	Write-Host 'powerdeploy $version$'
+	Write-Host "powerdeploy $global:PDVersion"
 	Write-Host ('='*80)
 
 	$ErrorActionPreference = 'Stop'
@@ -40,7 +40,7 @@ param (
 	# on it being set for us.
 	ExecuteCommandInSession { Set-ExecutionPolicy RemoteSigned -Scope Process }
 
-	DeployFilesToTarget $remotePackageTempDir $PSScriptRoot $PackageArchive -Settings $settings
+	DeployFilesToTarget "$remotePackageTempDir" "$PSScriptRoot\.." $PackageArchive -Settings $settings
 
 	# Execute deployment script on remote.
 	$packageFileName = Split-Path $PackageArchive -Leaf

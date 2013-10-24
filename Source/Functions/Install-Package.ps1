@@ -10,7 +10,7 @@ param (
 	[string]$PackageTargetPath
 )
 	Write-Host ('='*80)
-	Write-Host ("powerdeploy `$version`$ on $env:computername")
+	Write-Host ("powerdeploy $global:PDVersion on $env:computername")
 	Write-Host ('='*80)
 
 	$ErrorActionPreference = 'Stop'
@@ -51,6 +51,10 @@ param (
 		-DeployedFolderPath $extractionPath
 	
 	# Run PostDeploy
+
+	Write-Verbose 'Unloading PSCX...'
 	Remove-Module pscx -Verbose:$false -ErrorAction SilentlyContinue
+
+	Write-Verbose 'Package installation completed without errors.'
 }
 

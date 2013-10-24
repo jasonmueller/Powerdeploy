@@ -22,7 +22,10 @@
 # THE SOFTWARE.
 
 #Requires -Version 2.0
-Resolve-Path $PSScriptRoot\Functions\*.ps1 | 
+$global:PDVersion = '$version$'
+$global:PDRunRoot = $PSScriptRoot
+
+Resolve-Path $global:PDRunRoot\Functions\*.ps1 | 
     ? { -not ($_.ProviderPath.Contains(".Tests.")) } |
     % { . $_.ProviderPath }
 
