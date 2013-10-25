@@ -20,7 +20,8 @@ Describe 'Install-Package' {
             $PackageName -eq 'somepackage' `
             -and $PackageVersion -eq '1.2.3' `
             -and $EnvironmentName -eq 'production' `
-            -and $DeployedFolderPath -eq 'testdrive:\deploytome'
+            -and $DeployedFolderPath -eq 'testdrive:\deploytome' `
+            -and $DeploymentSourcePath -eq 'testdrive:\pdtemp'
         }
     }
 }

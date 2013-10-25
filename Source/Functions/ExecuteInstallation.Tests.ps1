@@ -20,13 +20,14 @@ Describe 'ExecuteInstallation' {
     Mock RunConventions { $global:TestContext.conventionsHadContext = $global:TestContext.contextCalled }
     Mock Set-DeploymentContext { $global:TestContext.contextCalled = $true } 
     Mock Import-Module { } -ParameterFilter { $Name -like '*Installer.psm1' }
-    Mock BuildDeploymentContext { $fakeContext }
+    Mock BuildDeploymentContext { $fakeContext } -ParameterFilter { $DeploymentSourcePath -eq 'testdrive:\pdtemp'}
 
     ExecuteInstallation `
         -PackageName 'fuzzy-bunny' `
         -PackageVersion '9.3.1' `
         -EnvironmentName 'prod-like' `
-        -DeployedFolderPath 'testdrive:\package-target'
+        -DeployedFolderPath 'testdrive:\package-target' `
+        -DeploymentSourcePath 'testdrive:\pdtemp'
 
     It 'configures the deployment context' {
         Assert-MockCalled Set-DeploymentContext -ParameterFilter { $EnvironmentName -eq 'prod-like' }

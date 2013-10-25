@@ -48,7 +48,8 @@ param (
 		-PackageName $packageId `
 		-PackageVersion $packageVersion `
 		-EnvironmentName $Environment `
-		-DeployedFolderPath $extractionPath
+		-DeployedFolderPath $extractionPath `
+		-DeploymentSourcePath $DeploymentTempRoot
 	
 	# Run PostDeploy
 

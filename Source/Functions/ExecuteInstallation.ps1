@@ -2,7 +2,8 @@ function ExecuteInstallation (
     $PackageName, 
     $PackageVersion, 
     $EnvironmentName, 
-    $DeployedFolderPath) { 
+    $DeployedFolderPath,
+    $DeploymentSourcePath) { 
 
     Import-Module "$PSScriptRoot\..\Helpers\Installer.psm1"
 
@@ -20,7 +21,12 @@ function ExecuteInstallation (
         -PackageName $PackageName `
         -PackageVersion $PackageVersion
 
-    $context = BuildDeploymentContext $PackageName $PackageVersion 'deprecated' $EnvironmentName $DeployedFolderPath
+    $context = BuildDeploymentContext `
+        $PackageName `
+        $PackageVersion `
+        $DeploymentSourcePath `
+        $EnvironmentName `
+        $DeployedFolderPath
 
     Set-DeploymentContext -Variables $context.Settings
     
