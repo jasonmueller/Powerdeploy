@@ -5,7 +5,7 @@ param (
 	[string][parameter(Position = 0, Mandatory = $true)]$PackageArchive,
 	[string][parameter(Position = 1, Mandatory = $true)]$Environment,
 	[string]$Role,
-	[string]$ComputerName,
+	[string]$ComputerName = "localhost",
 	[System.Management.Automation.PSCredential]$RemoteCredential,
 	[string]$RemotePackageTargetPath,
 	[System.Uri]$SettingsUri
