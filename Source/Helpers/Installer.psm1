@@ -1,12 +1,13 @@
-$helpersPath = (Split-Path -parent $MyInvocation.MyCommand.Definition);
+$here = (Split-Path -parent $MyInvocation.MyCommand.Definition)
 
 # Grab functions from files.
-Resolve-Path $helpersPath\functions\*.ps1 | 
+Resolve-Path $here\Functions\*.ps1 | 
     ? { -not ($_.ProviderPath.Contains(".Tests.")) } |
     % { . $_.ProviderPath }
 
-Export-ModuleMember -Function `
-    Get-DeploymentEnvironmentName `
-    Get-DeploymentFolder
+Export-ModuleMember `
+    Get-DeploymentEnvironmentName, `
+    Get-DeploymentFolder,
+    Set-DeploymentContext
 
 

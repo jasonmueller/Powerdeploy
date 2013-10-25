@@ -44,7 +44,8 @@ param (
 
 	# Execute deployment script on remote.
 	$packageFileName = Split-Path $PackageArchive -Leaf
-	$remoteCommand = "Import-Module $localPackageTempDir\scripts\PowerDeploy.psm1;"
+    $remoteCommand = "`$ErrorActionPreference = 'Stop';"
+	$remoteCommand += "Import-Module $localPackageTempDir\scripts\PowerDeploy.psm1;"
 	$remoteCommand += "Install-Package $localPackageTempDir\package\$packageFileName $Environment"
 	$remoteCommand += " -DeploymentTempRoot $localPackageTempDir"
 	if (![String]::IsNullOrEmpty($Role)) { $remoteCommand += " -Role $Role" }

@@ -14,10 +14,10 @@ param (
 	Write-Host ('='*80)
 
 	$ErrorActionPreference = 'Stop'
-	
-	Import-Pscx
 
-	"Installing package $PackageArchive for the $Environment environment..."
+	Import-Pscx | Out-Null
+
+	Write-Host "Installing package $PackageArchive for the $Environment environment..."
 
 	$packageFileName = Split-Path $PackageArchive -Leaf
 	$packageNameWithVersion = [System.IO.Path]::GetFileNameWithoutExtension($packageFileName)
@@ -42,7 +42,7 @@ param (
 	$packageId = $matches.Package
 	$packageVersion = $matches.Version
 	
-	"Installing version $packageVersion of package $packageId..."
+	Write-Host "Installing version $packageVersion of package $packageId..."
 
 	ExecuteInstallation `
 		-PackageName $packageId `

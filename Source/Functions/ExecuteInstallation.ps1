@@ -5,7 +5,7 @@ function ExecuteInstallation (
     $DeployedFolderPath) { 
 
     Import-Module "$PSScriptRoot\..\Helpers\Installer.psm1"
-    
+
     # Set up the context to transition to the module.
     # It may seem odd here that we are importing a module and setting up a context
     # to run conventions in, rather than just using include functions like we do
