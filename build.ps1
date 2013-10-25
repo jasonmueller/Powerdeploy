@@ -10,7 +10,8 @@ task Build -depends Clean, Test, Package
 task Package -depends Version, Squirt, Unversion
 
 task Squirt {
-    Copy-Item $sourceFolder\* $buildFolder -Recurse -Exclude *.Tests.ps1,.git
+    Copy-Item $sourceFolder\* $buildFolder -Recurse -Exclude .git
+    Get-ChildItem $buildFolder *.Tests.ps1 -Recurse | Remove-Item
 }
 
 task Test { 
