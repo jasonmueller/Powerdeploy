@@ -15,12 +15,6 @@ function ExecuteInstallation (
     # "consumable" side that is exposed to conventions and deployment packages.
     # For this reason, we don't want them to rely on "internals", but rather on
     # the installation module with it's published commandlets, etc.
-    Set-DeploymentContext `
-        -EnvironmentName $EnvironmentName `
-        -DeployedFolderPath $DeployedFolderPath `
-        -PackageName $PackageName `
-        -PackageVersion $PackageVersion
-
     $context = BuildDeploymentContext `
         $PackageName `
         $PackageVersion `
@@ -28,8 +22,25 @@ function ExecuteInstallation (
         $EnvironmentName `
         $DeployedFolderPath
 
-    Set-DeploymentContext -Variables $context.Settings
+    $newStyleContext = @{
+        PackageName = $PackageName
+        PackageVersion = $PackageVersion
+        DeployedFolderPath = $DeployedFolderPath
+        EnvironmentName = $EnvironmentName
+        Variables = $context.Settings
+    }
+
+    Set-DeploymentContext @newStyleContext #-Variables $context.Settings
     
+    $initializationScriptPath = "$DeployedFolderPath\deploy\Initialize.ps1"
+    Write-Host $initializationScriptPath
+    if (Test-Path $initializationScriptPath) {
+        Write-Verbose "An initialization script was found for the package and is being run..."
+        & $initializationScriptPath
+    }
+
+    Get-RegisteredDeploymentScript -Pre -Phase Install | Invoke-RegisteredDeploymentScript
+
     RunConventions (Resolve-Path $PSScriptRoot\..\Conventions\*Convention.ps1) $context
 
     Write-Host 'Installation finished.'
