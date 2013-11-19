@@ -2,7 +2,7 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests.", ".")
 . $here\ExecuteCommandInSession.ps1
 . $here\$sut
-. $here\TestHelpers.ps1
+. $here\..\TestHelpers.ps1
 
 Describe 'GetPackageTempDirectoryOnTarget' {
     Context 'with no environment variable present' {
