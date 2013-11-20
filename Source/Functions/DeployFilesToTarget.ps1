@@ -3,9 +3,23 @@ function DeployFilesToTarget {
         $DeploymentTempRoot,
         $ScriptRoot,
         $PackagePath,
-        $Settings
+        $Settings,
+        $Credential = $null
     )
     
+    $deployTempDriveRoot = [System.IO.Path]::GetPathRoot($DeploymentTempRoot)
+    $driveParams = @{
+        Name = 'DeploymentRoot'
+        PSProvider = 'FileSystem'
+        Root = $deployTempDriveRoot
+    }
+    if ($Credential -ne $null) {
+        $driveParams.Credential = $Credential
+    }
+
+    Write-Verbose "Connecting DeploymentRoot: drive to $deployTempDriveRoot..."
+    New-PSDrive @driveParams | Out-Null
+
     $packageTempRoot = "$DeploymentTempRoot\package"
     $scriptTempRoot = "$DeploymentTempRoot\scripts"
     $settingsTempRoot = "$DeploymentTempRoot\settings"
@@ -13,26 +27,26 @@ function DeployFilesToTarget {
     Write-Verbose "Deploying files to target '$DeploymentTempRoot'..."
 
     try {
-        New-Item $DeploymentTempRoot -ItemType Directory | Out-Null
+       New-Item -Path $DeploymentTempRoot -ItemType Directory | Out-Null
     }
-    catch [System.UnauthorizedAccessException] {
+    catch [Exception] {
         Write-Error ("The deployment directory could not be created at $DeploymentTempRoot. " +
             "Ensure that the current user has access to both the package share and the target filesystem " +
             "represented by the share.  Alternatively, set a PowerDeployPackageShare environment variable " +
             "on the target system that the current user has access to.")
-        throw $_.Exception
+        throw $_
     }
 
     Write-Verbose 'Deploying deployment scripts to target...'
     Copy-Item $ScriptRoot $scriptTempRoot -Recurse
     
     Write-Verbose 'Deploying package to target...'
-    New-Item $packageTempRoot -ItemType Directory | Out-Null
-    Copy-Item $PackagePath $packageTempRoot
+    New-Item -Path $packageTempRoot -ItemType Directory | Out-Null
+    Copy-Item $PackagePath $packageTempRoot\
 
     if ($Settings -ne $null) {
         Write-Verbose 'Deploying settings to target computer for integration at install...'
-        New-Item $settingsTempRoot -ItemType Directory | Out-Null
+        New-Item -Path $settingsTempRoot -ItemType Directory | Out-Null
         $Settings | ConvertTo-StringData | Out-File $settingsTempRoot\Settings.pson
     }
     else {

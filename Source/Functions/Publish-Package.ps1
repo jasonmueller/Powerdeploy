@@ -17,7 +17,7 @@ param (
 	$ErrorActionPreference = 'Stop'
 	$deploymentId = [Guid]::NewGuid().ToString("N")
 
-	"Beginning deployment of package '$(Split-Path $PackageArchive -Leaf)' for environment '$Environment' to $ComputerName..."
+	Write-Host "Beginning deployment of package '$(Split-Path $PackageArchive -Leaf)' for environment '$Environment' to $ComputerName..."
 	
 	$remoteSession = CreateRemoteSession -ComputerName $ComputerName -Credential $RemoteCredential
 	SetCurrentPowerDeployCommandSession $remoteSession
@@ -40,7 +40,7 @@ param (
 	# on it being set for us.
 	ExecuteCommandInSession { Set-ExecutionPolicy RemoteSigned -Scope Process }
 
-	DeployFilesToTarget "$remotePackageTempDir" "$PSScriptRoot\.." $PackageArchive -Settings $settings
+	DeployFilesToTarget "$remotePackageTempDir" "$PSScriptRoot\.." $PackageArchive -Settings $settings -Credential $RemoteCredential
 
 	# Execute deployment script on remote.
 	$packageFileName = Split-Path $PackageArchive -Leaf
@@ -52,27 +52,27 @@ param (
 	if ($RemotePackageTargetPath -ne $null -and $RemotePackageTargetPath.Length -gt 1) { $remoteCommand += " -PackageTargetPath $RemotePackageTargetPath" }
 	$remoteCommand += " -Verbose:`$$($PSBoundParameters['Verbose'] -eq $true)"
 	
-	"Executing command $remoteCommand on target $ComputerName..."
+	Write-Host "Executing command $remoteCommand on target $ComputerName..."
 	$parameters = @{
 		ScriptBlock = (Invoke-Expression " { $remoteCommand } ")
 		Session = $remoteSession
 	}
 	
-	('-'*80)
-	"  Beginning remote execution on $ComputerName..." 
-	('-'*80)
+	Write-Host ('-'*80)
+	Write-Host "  Beginning remote execution on $ComputerName..." 
+	Write-Host ('-'*80)
 	
 	Invoke-Command @parameters
 
-	('-'*80)
-	"  Remote execution complete."
-	('-'*80) 
+	Write-Host ('-'*80)
+	Write-Host "  Remote execution complete."
+	Write-Host ('-'*80) 
 
 	Write-Verbose "Closing remote session..."
 	Remove-PSSession $remoteSession
 
 	# Clean up the package.
-	"Removing the package from the temporary deployment location..."
+	Write-Verbose "Removing the package from the temporary deployment location..."
 	try {
 		Remove-Item $remotePackageTempDir -Recurse -Force
 	}
