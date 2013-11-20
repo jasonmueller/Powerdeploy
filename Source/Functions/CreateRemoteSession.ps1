@@ -57,5 +57,7 @@ function CreateRemoteSession {
         }
     }    
 
+    Write-Verbose "Remote session connected successfully."
+
     $session
 }

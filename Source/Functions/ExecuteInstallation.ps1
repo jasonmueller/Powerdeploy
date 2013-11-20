@@ -5,7 +5,7 @@ function ExecuteInstallation (
     $DeployedFolderPath,
     $DeploymentSourcePath) { 
 
-    Import-Module "$PSScriptRoot\..\Helpers\Installer.psm1"
+    Import-Module "$PSScriptRoot\..\Helpers\Installer.psm1" -Verbose:$false
 
     # Set up the context to transition to the module.
     # It may seem odd here that we are importing a module and setting up a context
@@ -33,7 +33,6 @@ function ExecuteInstallation (
     Set-DeploymentContext @newStyleContext #-Variables $context.Settings
     
     $initializationScriptPath = "$DeployedFolderPath\deploy\Initialize.ps1"
-    Write-Host $initializationScriptPath
     if (Test-Path $initializationScriptPath) {
         Write-Verbose "An initialization script was found for the package and is being run..."
         & $initializationScriptPath
