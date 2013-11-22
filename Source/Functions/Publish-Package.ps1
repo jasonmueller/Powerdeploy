@@ -17,6 +17,10 @@ param (
 	$ErrorActionPreference = 'Stop'
 	$deploymentId = [Guid]::NewGuid().ToString("N")
 
+	if (!(Test-Path $PackageArchive)) {
+		throw "The package specified does not exist: $PackageArchive"
+	}
+
 	Write-Host "Beginning deployment of package '$(Split-Path $PackageArchive -Leaf)' for environment '$Environment' to $ComputerName..."
 	
 	$remoteSession = CreateRemoteSession -ComputerName $ComputerName -Credential $RemoteCredential
