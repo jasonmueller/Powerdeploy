@@ -15,8 +15,6 @@ param (
 
 	$ErrorActionPreference = 'Stop'
 
-	Import-Pscx | Out-Null
-
 	Write-Host "Installing package $PackageArchive for the $Environment environment..."
 
 	$packageFileName = Split-Path $PackageArchive -Leaf
@@ -51,11 +49,6 @@ param (
 		-DeployedFolderPath $extractionPath `
 		-DeploymentSourcePath $DeploymentTempRoot
 	
-	# Run PostDeploy
-
-	Write-Verbose 'Unloading PSCX...'
-	Remove-Module pscx -Verbose:$false -ErrorAction SilentlyContinue
-
 	Write-Verbose 'Package installation completed without errors.'
 }
 

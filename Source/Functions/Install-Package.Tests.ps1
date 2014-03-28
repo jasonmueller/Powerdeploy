@@ -5,7 +5,6 @@ Describe 'Install-Package' {
 
     Setup -Dir pdtemp
 
-    Mock Import-Pscx { }
     Mock ExtractPackage { }
     Mock ExecuteInstallation { }
 

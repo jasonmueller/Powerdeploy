@@ -6,8 +6,8 @@ function ExtractPackage {
         $TargetPath
     )
 
-    Write-Verbose "Extracting package to $TargetPath..."
+    Write-Verbose "Extracting $PackagePath to $TargetPath..."
     $packageTarget = New-Item $TargetPath -ItemType Directory -Force    
-    Expand-Archive $PackagePath $TargetPath
+    ExpandZipArchive $PackagePath $TargetPath
     Write-Verbose "Package successfully extracted."
 }
