@@ -15,8 +15,6 @@ Describe 'ExtractPackage' {
 
         ExtractPackage $archivePath $extractionPath
 
-        ls TestDrive:\extracted -rec
-
         It 'extracts the package' {
             Test-Path 'TestDrive:\extracted\dir1' | should be $true
             Test-Path 'TestDrive:\extracted\dir1\file1.txt' | should be $true

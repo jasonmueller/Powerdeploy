@@ -1,6 +1,4 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
-Write-Host "here"
-Write-Host $here
 . $here\..\MimicModule.Tests.ps1
 . $here\..\TestHelpers.ps1
 
@@ -21,3 +19,4 @@ Describe 'Publish-Package, with a package archive' {
         }
     }
 }
+

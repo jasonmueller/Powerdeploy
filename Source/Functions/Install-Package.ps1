@@ -7,7 +7,8 @@ param (
 	[parameter(Mandatory = $true)]
 	[string]$DeploymentTempRoot,
 	[string]$Role,
-	[string]$PackageTargetPath
+	[string]$PackageTargetPath,
+    [scriptblock]$PostInstallScript = { }
 )
 	Write-Host ('='*80)
 	Write-Host ("powerdeploy $global:PDVersion on $env:computername")
@@ -31,7 +32,6 @@ param (
 	
 	$extractionPath = GenerateExtractionPath $requestedExtractionPath
 
-	# Unzip the package
 	ExtractPackage $PackageArchive $extractionPath
 
 	if ($packageNameWithVersion -match '^(PD_)?(?<Package>[^_]+)_(?<Version>.+)$' -eq $false) {
@@ -50,5 +50,14 @@ param (
 		-DeploymentSourcePath $DeploymentTempRoot
 	
 	Write-Verbose 'Package installation completed without errors.'
+
+    Write-Host "Executing post install script..."
+    $global:PowerdeployDeploymentParameters = New-Object PSObject -Property @{
+        PackageName = $packageId
+        PackageVersion = $packageVersion
+        EnvironmentName = $Environment
+        DeployedFolderPath = $extractionPath
+    }
+    & $PostInstallScript
 }
 

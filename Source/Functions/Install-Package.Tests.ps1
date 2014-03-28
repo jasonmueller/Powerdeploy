@@ -12,7 +12,8 @@ Describe 'Install-Package' {
         -PackageArchive 'somepackage_1.2.3.zip' `
         -Environment 'production' `
         -DeploymentTempRoot testdrive:\pdtemp `
-        -PackageTargetPath testdrive:\deploytome
+        -PackageTargetPath testdrive:\deploytome `
+        -PostInstallScript { $PowerdeployDeploymentParameters | ConvertTo-Json | Out-File testdrive:\params.json }
 
     It 'starts installation' {
         Assert-MockCalled ExecuteInstallation -ParameterFilter { `
@@ -22,5 +23,18 @@ Describe 'Install-Package' {
             -and $DeployedFolderPath -eq 'testdrive:\deploytome' `
             -and $DeploymentSourcePath -eq 'testdrive:\pdtemp'
         }
+    }
+
+    It 'executes post install script' {
+        Test-Path testdrive:\params.json | should be $true
+    }
+
+    It 'makes deployment parameters available to install script' {
+        $params = Get-Content testdrive:\params.json -Raw | ConvertFrom-Json
+
+        $params.PackageName | should be 'somepackage'
+        $params.PackageVersion | should be '1.2.3'
+        $params.EnvironmentName | should be 'production'
+        $params.DeployedFolderPath | should be 'testdrive:\deploytome'
     }
 }

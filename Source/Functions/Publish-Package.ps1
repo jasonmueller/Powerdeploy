@@ -8,7 +8,8 @@ param (
 	[string]$ComputerName = "localhost",
 	[System.Management.Automation.PSCredential]$RemoteCredential,
 	[string]$RemotePackageTargetPath,
-	[System.Uri]$SettingsUri
+	[System.Uri]$SettingsUri,
+	[scriptblock]$PostInstallScript = { }	
 )
 	Write-Host ('='*80)
 	Write-Host "powerdeploy $global:PDVersion"
@@ -54,6 +55,7 @@ param (
 	$remoteCommand += " -DeploymentTempRoot $localPackageTempDir"
 	if (![String]::IsNullOrEmpty($Role)) { $remoteCommand += " -Role $Role" }
 	if ($RemotePackageTargetPath -ne $null -and $RemotePackageTargetPath.Length -gt 1) { $remoteCommand += " -PackageTargetPath $RemotePackageTargetPath" }
+	$remoteCommand += " -PostInstallScript { $PostInstallScript }"
 	$remoteCommand += " -Verbose:`$$($PSBoundParameters['Verbose'] -eq $true)"
 	
 	Write-Host "Executing command $remoteCommand on target $ComputerName..."
@@ -66,14 +68,17 @@ param (
 	Write-Host "  Beginning remote execution on $ComputerName..." 
 	Write-Host ('-'*80)
 	
-	Invoke-Command @parameters
+	Write-Host "Executing installation..."
+	ExecuteCommandInSession (Invoke-Expression " { $remoteCommand } ")
 
 	Write-Host ('-'*80)
 	Write-Host "  Remote execution complete."
 	Write-Host ('-'*80) 
 
-	Write-Verbose "Closing remote session..."
-	Remove-PSSession $remoteSession
+	if ($remoteSession -ne $null) {
+		Write-Verbose "Closing remote session..."
+		Remove-PSSession $remoteSession
+	}
 
 	# Clean up the package.
 	Write-Verbose "Removing the package from the temporary deployment location..."
