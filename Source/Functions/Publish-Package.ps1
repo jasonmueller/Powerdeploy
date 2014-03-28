@@ -1,16 +1,16 @@
-# .ExternalHelp  powerdeploy.psm1-help.xml
 function Publish-Package {
-[CmdletBinding()]
-param (
-	[string][parameter(Position = 0, Mandatory = $true)]$PackageArchive,
-	[string][parameter(Position = 1, Mandatory = $true)]$Environment,
-	[string]$Role,
-	[string]$ComputerName = "localhost",
-	[System.Management.Automation.PSCredential]$RemoteCredential,
-	[string]$RemotePackageTargetPath,
-	[System.Uri]$SettingsUri,
-	[scriptblock]$PostInstallScript = { }	
-)
+	# .ExternalHelp ..\powerdeploy.psm1-help.xml
+	[CmdletBinding()]
+	param (
+		[string][parameter(Position = 0, Mandatory = $true)]$PackageArchive,
+		[string][parameter(Position = 1, Mandatory = $true)]$Environment,
+		[string]$Role,
+		[string]$ComputerName = "localhost",
+		[System.Management.Automation.PSCredential]$Credential,
+		[string]$RemotePackageTargetPath,
+		[System.Uri]$SettingsUri,
+		[scriptblock]$PostInstallScript = { }	
+	)
 	Write-Host ('='*80)
 	Write-Host "powerdeploy $global:PDVersion"
 	Write-Host ('='*80)
@@ -24,7 +24,7 @@ param (
 
 	Write-Host "Beginning deployment of package '$(Split-Path $PackageArchive -Leaf)' for environment '$Environment' to $ComputerName..."
 	
-	$remoteSession = CreateRemoteSession -ComputerName $ComputerName -Credential $RemoteCredential
+	$remoteSession = CreateRemoteSession -ComputerName $ComputerName -Credential $Credential
 	SetCurrentPowerDeployCommandSession $remoteSession
 
 	$packagePaths = GetPackageTempDirectoryAndShareOnTarget
@@ -45,7 +45,7 @@ param (
 	# on it being set for us.
 	ExecuteCommandInSession { Set-ExecutionPolicy RemoteSigned -Scope Process }
 
-	DeployFilesToTarget "$remotePackageTempDir" "$PSScriptRoot\.." $PackageArchive -Settings $settings -Credential $RemoteCredential
+	DeployFilesToTarget "$remotePackageTempDir" "$PSScriptRoot\.." $PackageArchive -Settings $settings -Credential $Credential
 
 	# Execute deployment script on remote.
 	$packageFileName = Split-Path $PackageArchive -Leaf
