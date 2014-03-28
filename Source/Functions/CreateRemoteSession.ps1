@@ -8,8 +8,13 @@ function CreateRemoteSession {
 
     $parameters = @{
         ComputerName = $ComputerName
-        #SessionOption = New-PSSessionOption -NoMachineProfile
         #Authentication = 'Negotiate'
+    }
+
+    $settings = $global:PowerdeploySettings
+
+    if ($settings.LoadProfileOnRemoteTarget -eq $false) {
+        $parameters.SessionOption = New-PSSessionOption -NoMachineProfile
     }
        
     if ($Credential -ne $null) { $parameters.Credential = $Credential }
