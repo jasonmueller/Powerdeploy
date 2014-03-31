@@ -7,5 +7,6 @@ param (
 	$7zip = Resolve-Path $PSScriptRoot\..\Tools\7za.exe
 
 	$arguments = "x -o`"$Destination`" -y `"$archivePath`""
-    Start-Process "$7zip" -ArgumentList "x -o`"$Destination`" -y `"$archivePath`"" -Wait
+    $process = [Diagnostics.Process]::Start($7zip, "x -o`"$Destination`" -y `"$archivePath`"")
+    $process.WaitForExit()
 }
