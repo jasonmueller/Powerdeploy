@@ -11,7 +11,10 @@ task Build -depends Clean, Test, Package
 task Package -depends Version, Squirt, Unversion, Zip
 
 task Zip {
-    exec { ."$sourceFolder\Tools\7za.exe" a -r "$packageFolder\Powerdeploy-$version.zip" "$buildFolder\*" }
+    Copy-Item $buildFolder $packageFolder\temp\Powerdeploy -Recurse
+    $version -match '^v?(?<version>.+)$'
+    $strippedVersion = $matches.version
+    exec { ."$sourceFolder\Tools\7za.exe" a -r "$packageFolder\Powerdeploy-$strippedVersion.zip" "$packageFolder\temp\Powerdeploy" }
 }
 
 task Squirt {
