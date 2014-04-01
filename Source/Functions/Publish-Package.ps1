@@ -58,7 +58,7 @@ function Publish-Package {
 	$remoteCommand += " -PostInstallScript { $PostInstallScript }"
 	$remoteCommand += " -Verbose:`$$($PSBoundParameters['Verbose'] -eq $true)"
 	
-	Write-Host "Executing command $remoteCommand on target $ComputerName..."
+	Write-Verbose "Executing command $remoteCommand on target $ComputerName..."
 	$parameters = @{
 		ScriptBlock = (Invoke-Expression " { $remoteCommand } ")
 		Session = $remoteSession
