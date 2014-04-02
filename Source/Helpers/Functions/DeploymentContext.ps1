@@ -1,4 +1,12 @@
-$global:pddeploymentcontext = @{}
+$global:pddeploymentcontext = @{
+    Parameters = @{ }
+    Settings = @{ }
+    State = @{ }
+}
+
+function Clear-DeploymentContextState {
+    $global:pddeploymentcontext.State = @{ } 
+}
 
 function Set-DeploymentContext {
     param(
@@ -6,10 +14,9 @@ function Set-DeploymentContext {
         [string]$DeployedFolderPath,
         [string]$PackageName,
         [string]$PackageVersion,
-        $Variables = @{}
+        $Variables = @{ }
     )
-    $global:pddeploymentcontext = @{
-        Parameters = @{
+    $global:pddeploymentcontext.Parameters = @{
             # PackageId = $PackageId
             # PackageVersion = $PackageVersion
             PackageName = $PackageName
@@ -18,8 +25,20 @@ function Set-DeploymentContext {
             ExtractedPackagePath = $DeployedFolderPath
             # SettingsFilePath = $settingsFile
         }
-        Settings = $Variables
-    }
+    $global:pddeploymentcontext.Settings = $Variables
+}
+
+function Set-DeploymentContextState {
+    param(
+        [string]$Name,
+        $Value
+    )
+    $global:pddeploymentcontext.State.$Name = $Value
+}
+
+function Get-DeploymentContextState {
+    param([string]$Name)
+    $global:pddeploymentcontext.State.$Name
 }
 
 function Get-DeploymentContext {

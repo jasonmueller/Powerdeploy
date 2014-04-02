@@ -29,3 +29,15 @@ Describe 'Invoke-RegisteredDeploymentScript, with a script' {
          $global:pester_pd_test_irds_ran | should be $true
     }
 }
+
+Describe 'Get-RegisteredDeploymentScript, given no scripts registered' {
+    Clear-DeploymentContextState
+
+    $scripts = Get-RegisteredDeploymentScript -Pre -Phase Install
+
+    It 'returns null' {
+        # $scripts -is [Array] | should be $true
+        # $scripts.Length | should be 0
+        $scripts | should be $null
+    }
+}

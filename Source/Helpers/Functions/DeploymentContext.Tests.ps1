@@ -76,3 +76,32 @@ Describe 'Get-DeploymentVariable, with a setting name' {
         }
     }
 }
+
+Describe 'Set-DeploymentContextState' {
+    Set-DeploymentContextState -Name 'wazo' -Value 'juniper'
+    
+    It 'makes the state available' {
+        $result = Get-DeploymentContextState -Name 'wazo'
+        $result | should be 'juniper'
+    }
+}
+
+Describe 'Get-DeploymentContextState, given no state by name exists' {
+    $result = Get-DeploymentContextState -Name 'jibbit'
+
+    It 'returns null' {
+        $result | should be $null
+    }
+}
+
+Describe 'Clear-DeploymentContextState, given state exists' {
+    Set-DeploymentContextState -Name key1 -Value value1
+    Set-DeploymentContextState -Name key2 -Value value2
+
+    Clear-DeploymentContextState
+
+    It 'clears all values from state' {
+        Get-DeploymentContextState -Name key1 | should be $null
+        Get-DeploymentContextState -Name key2 | should be $null
+    }
+}
