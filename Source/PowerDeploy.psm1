@@ -31,6 +31,4 @@ Resolve-Path $global:PDRunRoot\Functions\*.ps1 |
 
 Export-ModuleMember `
 	Install-Package, `
-	Publish-Package, `
-	Load-WebAdministration, `
-	Unload-WebAdministration
+	Publish-Package
