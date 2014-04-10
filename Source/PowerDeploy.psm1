@@ -160,7 +160,7 @@ param (
 	RunConventions (Resolve-Path $PSScriptRoot\Conventions\*Convention.ps1) $context
 
 	# Run PostDeploy
-	Remove-Module pscx -Verbose:$false
+    Remove-Module pscx -Verbose:$false
 }
 
 function Load-WebAdministration {
@@ -198,8 +198,8 @@ function Unload-WebAdministration {
 }
 
 function Import-Pscx {
-	if ($PSVersionTable.PSVersion.Major -eq 3) {
-		"PowerShell v3 detected.  Using PowerShell Community Extension version 3."
+	if ($PSVersionTable.PSVersion.Major -ge 3) {
+		"PowerShell v3 or higher detected.  Using PowerShell Community Extension version 3."
 		Import-Module $PSScriptRoot\Modules\pscx.v3\pscx -Verbose:$false
 	}
 	else {
