@@ -160,7 +160,10 @@ param (
 	RunConventions (Resolve-Path $PSScriptRoot\Conventions\*Convention.ps1) $context
 
 	# Run PostDeploy
-    Remove-Module pscx -Verbose:$false
+    try {
+	   Remove-Module pscx -Verbose:$false
+    }
+    catch { }
 }
 
 function Load-WebAdministration {
