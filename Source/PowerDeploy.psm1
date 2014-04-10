@@ -203,7 +203,7 @@ function Unload-WebAdministration {
 function Import-Pscx {
 	if ($PSVersionTable.PSVersion.Major -ge 3) {
 		"PowerShell v3 or higher detected.  Using PowerShell Community Extension version 3."
-		Import-Module $PSScriptRoot\Modules\pscx.v3\pscx -Verbose:$false
+		Import-Module $PSScriptRoot\Modules\pscx.v3\pscx -Verbose:$false 2>&1
 	}
 	else {
 		"PowerShell v3 not detected.  Using PowerShell Community Extension version 2."
