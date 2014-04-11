@@ -20,8 +20,8 @@ blah
 blah
 
 ```
-Invoke-PowerdeployDeployment...
-````
+Invoke-PowerdeployDeployment -ComputerName SERVER1 -Environment Integration -Package C:\MyPackages\MyPackage_3.2.3.zip
+```
 
 ## So Powerful ##
 
