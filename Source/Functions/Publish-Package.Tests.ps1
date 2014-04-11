@@ -2,13 +2,13 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 . $here\..\MimicModule.Tests.ps1
 . $here\..\TestHelpers.ps1
 
-Describe 'Publish-Package, with a package archive' {
+Describe 'Invoke-Powerdeploy, with a package archive' {
 
     Context 'given the archive doesn''t exist' {
         Setup -Dir pdtemp
 
         $result = Capture { 
-            Publish-Package `
+            Invoke-Powerdeploy `
                 -PackageArchive 'testdrive:\somepackage_1.2.3.zip' `
                 -Environment 'production' 
         }

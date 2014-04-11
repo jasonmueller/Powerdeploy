@@ -29,6 +29,13 @@ Resolve-Path $global:PDRunRoot\Functions\*.ps1 |
     ? { -not ($_.ProviderPath.Contains(".Tests.")) } |
     % { . $_.ProviderPath }
 
+New-Alias -Name Publish-Package -Value Invoke-Powerdeploy
+
 Export-ModuleMember `
-	Install-Package, `
-	Publish-Package
+    -Function `
+	   Install-Package, `
+	   Invoke-Powerdeploy `
+    -Alias `
+        Publish-Package
+
+

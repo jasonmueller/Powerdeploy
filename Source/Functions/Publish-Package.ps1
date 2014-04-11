@@ -1,4 +1,4 @@
-function Publish-Package {
+function Invoke-Powerdeploy {
 	# .ExternalHelp ..\powerdeploy.psm1-help.xml
 	[CmdletBinding()]
 	param (
