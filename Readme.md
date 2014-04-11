@@ -10,7 +10,9 @@ Guiding Principles:
 
 ## So Simple ##
 
-Getting basic...
+All you need to use Powerdeploy is the module, a [package][] to deploy, and a target computer.
+
+![simple process](../powerdeploy/wiki/images/so-simple-process.png)
 
 ### Create a deployment package ###
 blah
@@ -20,7 +22,7 @@ blah
 blah
 
 ```
-Invoke-PowerdeployDeployment -ComputerName SERVER1 -Environment Integration -Package C:\MyPackages\MyPackage_3.2.3.zip
+Invoke-PowerdeployDeployment -ComputerName SERVER1 -Environment Integration -Package C:\MyPackages\MyPackage_3.2.3.zip 	
 ```
 
 ## So Powerful ##
@@ -29,3 +31,4 @@ Check out [the documentation][wiki] for more information on how Powerdeploy does
 
 [PowerShell]: http://technet.microsoft.com/en-us/library/bb978526.aspx
 [wiki]: /powerdeploy/wiki
+[package]: ../powerdeploy/wiki/package
