@@ -69,6 +69,7 @@ function ConvertTo-StringData
                     'String' { "'$value'" }
                     'Boolean' { "`$$value" }
                     'Hashtable' { Write-Hashtable $value }
+                    'ScriptBlock' { "{ $value }"}
                     default { $value }
                 }
             }

@@ -49,27 +49,41 @@ function Invoke-Powerdeploy {
 
 	# Execute deployment script on remote.
 	$packageFileName = Split-Path $PackageArchive -Leaf
-    $remoteCommand = "`$ErrorActionPreference = 'Stop';"
-	$remoteCommand += "Import-Module $localPackageTempDir\scripts\PowerDeploy.psm1;"
-	$remoteCommand += "Install-Package $localPackageTempDir\package\$packageFileName $Environment"
-	$remoteCommand += " -DeploymentTempRoot $localPackageTempDir"
-	if (![String]::IsNullOrEmpty($Role)) { $remoteCommand += " -Role $Role" }
-	if ($RemotePackageTargetPath -ne $null -and $RemotePackageTargetPath.Length -gt 1) { $remoteCommand += " -PackageTargetPath $RemotePackageTargetPath" }
-	$remoteCommand += " -PostInstallScript { $PostInstallScript }"
-	$remoteCommand += " -Verbose:`$$($PSBoundParameters['Verbose'] -eq $true)"
-	
-	Write-Verbose "Executing command $remoteCommand on target $ComputerName..."
-	$parameters = @{
-		ScriptBlock = (Invoke-Expression " { $remoteCommand } ")
-		Session = $remoteSession
-	}
-	
+	# if (![String]::IsNullOrEmpty($Role)) { $remoteCommand += " -Role $Role" }
+
+	# Build up the Install-Package parameters and convert it to a string
+	# that we can send to the target for splatting.  If we don't convert
+	# it to a string, we'll just end up passing the type name (Hashtable)
+	# to the target.
+	$installParameters = @{
+		PackageArchive = "$localPackageTempDir\package\$packageFileName"
+		Environment = $Environment
+		DeploymentTempRoot =  $localPackageTempDir
+		PostInstallScript = $PostInstallScript
+		PackageTargetPath = $RemotePackageTargetPath
+		Verbose = $PSBoundParameters['Verbose'] -eq $true
+	} | ConvertTo-StringData | Out-String
+	# if ($RemotePackageTargetPath -ne $null -and $RemotePackageTargetPath.Length -gt 1) { $remoteCommand += " -PackageTargetPath $RemotePackageTargetPath" }
+
+	# Build up the sequence of commands to execute on the target.
+	$remoteCommands = @(
+		# We will immediately fail remote execution on an error.
+		"`$ErrorActionPreference = 'Stop'",
+
+		# Import Powerdeploy on the target so we can access our Install-Package Cmdlet.
+		"Import-Module '$localPackageTempDir\scripts\Powerdeploy.psm1'",
+
+		# Send our installation parameters variable across and then install the package
+		# splatting in the installation parameters.
+		"`$installParameters = $installParameters; Install-Package @installParameters"
+	)
+
 	Write-Host ('-'*80)
 	Write-Host "  Beginning remote execution on $ComputerName..." 
 	Write-Host ('-'*80)
 	
-	Write-Host "Executing installation..."
-	ExecuteCommandInSession (Invoke-Expression " { $remoteCommand } ")
+	Write-Host "Executing installation on target..."
+	$remoteCommands | ForEach-Object { ExecuteCommandInSession (Invoke-Expression "{ $_ }") }
 
 	Write-Host ('-'*80)
 	Write-Host "  Remote execution complete."
