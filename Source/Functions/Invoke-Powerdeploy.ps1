@@ -16,7 +16,7 @@ function Invoke-Powerdeploy {
 	Write-Host ('='*80)
 
 	$ErrorActionPreference = 'Stop'
-	$deploymentId = [Guid]::NewGuid().ToString("N")
+	$deploymentId = GenerateUniqueDeploymentId
 
 	if (!(Test-Path $PackageArchive)) {
 		throw "The package specified does not exist: $PackageArchive"
@@ -90,3 +90,6 @@ function Invoke-Powerdeploy {
 	}
 }
 
+function GenerateUniqueDeploymentId() {
+	[Guid]::NewGuid().ToString("N")
+}
