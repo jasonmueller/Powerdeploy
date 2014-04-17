@@ -6,11 +6,11 @@ function RunConventions {
         $deploymentContext
     )
 
-    Write-Host "`r`nExecuting deployment conventions..."
+    Write-Verbose "`r`nExecuting deployment conventions..."
     $conventionFiles | ForEach-Object {
         $convention = (& $_)
         $metadata = $convention.metadata
-        Write-Host "`r`nExecuting convention [$($metadata.conventionName)]..."
+        Write-Verbose "`r`nExecuting convention [$($metadata.conventionName)]..."
 
         $onDeploy = $convention.onDeploy
         &$onDeploy -PowerDeploymentContext $deploymentContext

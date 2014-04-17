@@ -11,9 +11,9 @@ function Invoke-Powerdeploy {
 		[System.Uri]$SettingsUri,
 		[scriptblock]$PostInstallScript = { }	
 	)
-	Write-Host ('='*80)
-	Write-Host "powerdeploy $global:PDVersion"
-	Write-Host ('='*80)
+	Write-Verbose ('='*80)
+	Write-Verbose "powerdeploy $global:PDVersion"
+	Write-Verbose ('='*80)
 
 	$ErrorActionPreference = 'Stop'
 	$deploymentId = GenerateUniqueDeploymentId
@@ -22,7 +22,7 @@ function Invoke-Powerdeploy {
 		throw "The package specified does not exist: $PackageArchive"
 	}
 
-	Write-Host "Beginning deployment of package '$(Split-Path $PackageArchive -Leaf)' for environment '$Environment' to $ComputerName..."
+	Write-Verbose "Beginning deployment of package '$(Split-Path $PackageArchive -Leaf)' for environment '$Environment' to $ComputerName..."
 	
 	$remoteSession = CreateRemoteSession -ComputerName $ComputerName -Credential $Credential
 	SetCurrentPowerDeployCommandSession $remoteSession
@@ -79,16 +79,16 @@ function Invoke-Powerdeploy {
 		"`$installParameters = $installParameters; Install-Package @installParameters"
 	)
 
-	Write-Host ('-'*80)
-	Write-Host "  Beginning remote execution on $ComputerName..." 
-	Write-Host ('-'*80)
+	Write-Verbose ('-'*80)
+	Write-Verbose "  Beginning remote execution on $ComputerName..." 
+	Write-Verbose ('-'*80)
 	
-	Write-Host "Executing installation on target..."
+	Write-Verbose "Executing installation on target..."
 	$remoteCommands | ForEach-Object { ExecuteCommandInSession (Invoke-Expression "{ $_ }") }
 
-	Write-Host ('-'*80)
-	Write-Host "  Remote execution complete."
-	Write-Host ('-'*80) 
+	Write-Verbose ('-'*80)
+	Write-Verbose "  Remote execution complete."
+	Write-Verbose ('-'*80) 
 
 	if ($remoteSession -ne $null) {
 		Write-Verbose "Closing remote session..."

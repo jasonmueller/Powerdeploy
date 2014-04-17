@@ -11,13 +11,13 @@ param (
 	[Hashtable]$Settings,
     [ScriptBlock]$PostInstallScript = { }
 )
-	Write-Host ('='*80)
-	Write-Host ("powerdeploy $global:PDVersion on $env:computername")
-	Write-Host ('='*80)
+	Write-Verbose ('='*80)
+	Write-Verbose ("powerdeploy $global:PDVersion on $env:computername")
+	Write-Verbose ('='*80)
 
 	$ErrorActionPreference = 'Stop'
 
-	Write-Host "Installing package $PackageArchive for the $Environment environment..."
+	Write-Verbose "Installing package $PackageArchive for the $Environment environment..."
 
 	$packageFileName = Split-Path $PackageArchive -Leaf
 	$packageNameWithVersion = [System.IO.Path]::GetFileNameWithoutExtension($packageFileName)
@@ -41,7 +41,7 @@ param (
 	$packageId = $matches.Package
 	$packageVersion = $matches.Version
 	
-	Write-Host "Installing version $packageVersion of package $packageId..."
+	Write-Verbose "Installing version $packageVersion of package $packageId..."
 
 	ExecuteInstallation `
 		-PackageName $packageId `
@@ -53,7 +53,7 @@ param (
 	
 	Write-Verbose 'Package installation completed without errors.'
 
-    Write-Host "Executing post install script..."
+    Write-Verbose "Executing post install script..."
     $global:PowerdeployDeploymentParameters = New-Object PSObject -Property @{
         PackageName = $packageId
         PackageVersion = $packageVersion
