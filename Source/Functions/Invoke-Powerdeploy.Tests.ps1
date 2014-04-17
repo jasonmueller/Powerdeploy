@@ -63,5 +63,28 @@ Describe 'Invoke-Powerdeploy, with a package archive' {
             }
         }
     } 
+
+    Describe 'Invoke-Powerdeploy, with a settings uri' {
+        Setup -File 'somepackage_1.2.3.zip' ''
+
+        Mock Import-Module { }
+        Mock Set-ExecutionPolicy { }
+        Mock CreateRemoteSession { }
+        Mock DeployFilesToTarget { }
+        Mock Remove-PSSession { }
+        Mock GetPackageTempDirectoryAndShareOnTarget { @{ Share = "target-share"; LocalPath = "c:\target-local" }}
+        Mock SetCurrentPowerDeployCommandSession { }
+        Mock ExecuteCommandInSession { &$ScriptBlock }
+        Mock Install-Package { }
+        Mock GetSettingsFromUri { @{ SomeSetting = 'some-value' } } -ParameterFilter { $uri -eq 'uri://blah/blah' -and $environmentName -eq 'production' -and $computer -eq 'SERVER1' }
+
+        Invoke-Powerdeploy -ComputerName SERVER1 -PackageArchive testdrive:\somepackage_1.2.3.zip -Environment production -SettingsUri 'uri://blah/blah'
+
+        It 'includes the settings retrieved from the uri in the target installation' {
+            Assert-MockCalled Install-Package -ParameterFilter {
+                (&{$Settings}).SomeSetting | should be 'some-value'
+            }
+        }
+    }
 }
 

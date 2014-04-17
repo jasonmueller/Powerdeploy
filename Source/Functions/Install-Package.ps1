@@ -8,7 +8,8 @@ param (
 	[string]$DeploymentTempRoot,
 	[string]$Role,
 	[string]$PackageTargetPath,
-    [scriptblock]$PostInstallScript = { }
+	[Hashtable]$Settings,
+    [ScriptBlock]$PostInstallScript = { }
 )
 	Write-Host ('='*80)
 	Write-Host ("powerdeploy $global:PDVersion on $env:computername")
@@ -47,7 +48,8 @@ param (
 		-PackageVersion $packageVersion `
 		-EnvironmentName $Environment `
 		-DeployedFolderPath $extractionPath `
-		-DeploymentSourcePath $DeploymentTempRoot
+		-DeploymentSourcePath $DeploymentTempRoot `
+		-Settings $Settings
 	
 	Write-Verbose 'Package installation completed without errors.'
 

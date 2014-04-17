@@ -1,4 +1,5 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
+. $here\..\TestHelpers.ps1
 . $here\..\MimicModule.Tests.ps1
 
 Describe 'Install-Package' {
@@ -13,9 +14,14 @@ Describe 'Install-Package' {
         -Environment 'production' `
         -DeploymentTempRoot testdrive:\pdtemp `
         -PackageTargetPath testdrive:\deploytome `
-        -PostInstallScript { $PowerdeployDeploymentParameters | ConvertTo-Json | Out-File testdrive:\params.json }
+        -PostInstallScript { $PowerdeployDeploymentParameters | ConvertTo-Json | Out-File testdrive:\params.json } `
+        -Settings @{ 'somesetting' = 'some-value' }
 
-    It 'starts installation' {
+    It 'executes the installation' {
+        Assert-MockCalled ExecuteInstallation -Exactly 1
+    }
+
+    It 'executes the installation with all of the deployment parameters' {
         Assert-MockCalled ExecuteInstallation -ParameterFilter { `
             $PackageName -eq 'somepackage' `
             -and $PackageVersion -eq '1.2.3' `
@@ -29,12 +35,18 @@ Describe 'Install-Package' {
         Test-Path testdrive:\params.json | should be $true
     }
 
-    It 'makes deployment parameters available to install script' {
+    It 'makes deployment parameters available to post install script' {
         $params = Get-Content testdrive:\params.json -Raw | ConvertFrom-Json
 
         $params.PackageName | should be 'somepackage'
         $params.PackageVersion | should be '1.2.3'
         $params.EnvironmentName | should be 'production'
         $params.DeployedFolderPath | should be 'testdrive:\deploytome'
+    }
+
+    It 'executes the installation with the deployment settings' {
+        Assert-MockCalled ExecuteInstallation -ParameterFilter { 
+            (&{$Settings}).somesetting -eq 'some-value'
+        }
     }
 }

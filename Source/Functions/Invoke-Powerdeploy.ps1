@@ -61,6 +61,7 @@ function Invoke-Powerdeploy {
 		DeploymentTempRoot =  $localPackageTempDir
 		PostInstallScript = $PostInstallScript
 		PackageTargetPath = $RemotePackageTargetPath
+		Settings = $settings
 		Verbose = $PSBoundParameters['Verbose'] -eq $true
 	} | ConvertTo-StringData | Out-String
 	# if ($RemotePackageTargetPath -ne $null -and $RemotePackageTargetPath.Length -gt 1) { $remoteCommand += " -PackageTargetPath $RemotePackageTargetPath" }

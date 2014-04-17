@@ -3,7 +3,6 @@ function DeployFilesToTarget {
         $DeploymentTempRoot,
         $ScriptRoot,
         $PackagePath,
-        $Settings,
         $Credential = $null
     )
     
@@ -43,15 +42,6 @@ function DeployFilesToTarget {
     Write-Verbose 'Deploying package to target...'
     New-Item -Path $packageTempRoot -ItemType Directory | Out-Null
     Copy-Item $PackagePath $packageTempRoot\
-
-    if ($Settings -ne $null) {
-        Write-Verbose 'Deploying settings to target computer for integration at install...'
-        New-Item -Path $settingsTempRoot -ItemType Directory | Out-Null
-        $Settings | ConvertTo-StringData | Out-File $settingsTempRoot\Settings.pson
-    }
-    else {
-        Write-Verbose 'No settings uri was specified, so none will be deployed.'
-    }
 }
 
 function ConvertTo-StringData

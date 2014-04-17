@@ -19,6 +19,6 @@ function Get-CalledMock {
     $global:mockCallHistory | ? CommandName -eq $CommandName | % { 
         $mock = $_
         Write-Host $_.CommandName "was called with " 
-        ($mock.BoundParams).GetEnumerator() | Write-Host
+        $mock.BoundParams | convertto-json | write-host
     }
 }

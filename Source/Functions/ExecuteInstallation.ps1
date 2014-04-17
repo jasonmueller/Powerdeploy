@@ -3,7 +3,8 @@ function ExecuteInstallation (
     $PackageVersion, 
     $EnvironmentName, 
     $DeployedFolderPath,
-    $DeploymentSourcePath) { 
+    $DeploymentSourcePath,
+    [Hashtable] $Settings) { 
 
     Import-Module "$PSScriptRoot\..\Helpers\Installer.psm1" -Verbose:$false
 
@@ -15,19 +16,23 @@ function ExecuteInstallation (
     # "consumable" side that is exposed to conventions and deployment packages.
     # For this reason, we don't want them to rely on "internals", but rather on
     # the installation module with it's published commandlets, etc.
-    $context = BuildDeploymentContext `
-        $PackageName `
-        $PackageVersion `
-        $DeploymentSourcePath `
-        $EnvironmentName `
-        $DeployedFolderPath
+    $context =  @{
+        Parameters = @{
+            PackageId = $PackageName
+            PackageVersion = $PackageVersion
+            EnvironmentName = $EnvironmentName
+            DeploymentFilesPath = $DeploymentSourcePath
+            ExtractedPackagePath = $DeployedFolderPath
+        }
+        Settings = $settings
+    }
 
     $newStyleContext = @{
         PackageName = $PackageName
         PackageVersion = $PackageVersion
         DeployedFolderPath = $DeployedFolderPath
         EnvironmentName = $EnvironmentName
-        Variables = $context.Settings
+        Variables = $Settings
     }
 
     Set-DeploymentContext @newStyleContext #-Variables $context.Settings
