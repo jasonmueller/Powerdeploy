@@ -35,14 +35,22 @@ function ExecuteInstallation (
         Variables = $Settings
     }
 
-    Set-DeploymentContext @newStyleContext #-Variables $context.Settings
+    Set-DeploymentContext @newStyleContext
     
+    GetInstallationExtensions | ForEach-Object { 
+        $extension = $_
+        $extensionName = Split-Path (Split-Path $extension -Parent) -Leaf
+        Write-Verbose "Initializing extension $extensionName..."   
+        Invoke-Expression $extension
+    }
+
     $initializationScriptPath = "$DeployedFolderPath\deploy\Initialize.ps1"
     if (Test-Path $initializationScriptPath) {
         Write-Verbose "An initialization script was found for the package and is being run..."
         & $initializationScriptPath
     }
 
+    Write-Verbose "Executing pre-install scripts..."
     Get-RegisteredDeploymentScript -Pre -Phase Install | Invoke-RegisteredDeploymentScript
 
     RunConventions (Resolve-Path $PSScriptRoot\..\Conventions\*Convention.ps1) $context
@@ -51,4 +59,13 @@ function ExecuteInstallation (
 
     Write-Verbose 'Unloading installation module...'
     Remove-Module Installer -Verbose:$false -ErrorAction SilentlyContinue
+}
+
+function GetInstallationExtensions() {
+    Resolve-Path (Join-Path (GetInstallationExtensionRoot) "*\initialize.ps1")
+}
+
+function GetInstallationExtensionRoot() {
+    Write-Verbose "Locating extensions in $PSScriptRoot\..\Extensions"
+    "$PSScriptRoot\..\Extensions"
 }

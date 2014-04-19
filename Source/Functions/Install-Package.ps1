@@ -19,8 +19,8 @@ param (
 
 	Write-Verbose "Installing package $PackageArchive for the $Environment environment..."
 
-	$packageFileName = Split-Path $PackageArchive -Leaf
-	$packageNameWithVersion = [System.IO.Path]::GetFileNameWithoutExtension($packageFileName)
+	$private:packageFileName = Split-Path $PackageArchive -Leaf
+	$private:packageNameWithVersion = [System.IO.Path]::GetFileNameWithoutExtension($packageFileName)
 
 	if ($PackageTargetPath -ne $null -and $PackageTargetPath.Length -gt 0) {
 		$requestedExtractionPath = $PackageTargetPath

@@ -1,13 +1,16 @@
 $global:TestContext = @{} 
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$installerModulePath = "$here\..\Helpers\Functions\DeploymentContext.ps1"
+#$installerModulePath = "$here\..\Helpers\Functions\DeploymentContext.ps1"
 . $here\..\MimicModule.Tests.ps1
-. $installerModulePath
+. $here\..\TestHelpers.ps1
+# . $installerModulePath
+. $here\..\Helpers\Common.Tests.ps1
 
 Describe 'ExecuteInstallation' {
 
     Mock RunConventions { $global:TestContext.conventionsHadContext = $global:TestContext.contextCalled }
     Mock Set-DeploymentContext { $global:TestContext.contextCalled = $true } 
+    Mock Import-Module { } #-ParameterFilter { $Name -like '*Installer.psm1' }
     #Mock Import-Module { } -ParameterFilter { $Name -like '*Installer.psm1' }
 
     ExecuteInstallation `
@@ -45,7 +48,73 @@ Describe 'ExecuteInstallation' {
 
 }
 
+Describe 'ExecuteInstallation, with extensions' {
+    Setup -Dir extensions\extension1
+    Setup -File extensions\extension1\initialize.ps1 @'
+        Set-Content testdrive:\called.txt ""
+        Register-DeploymentScript -Pre -Phase Install -Script { }
+        $context = Get-DeploymentContext
+        Set-Content testdrive:\parms.txt "$($context.Parameters.PackageVersion)"
+'@
+
+    Mock Import-Module { } #-ParameterFilter { $Name -like '*Installer.psm1' }
+    Mock Register-DeploymentScript { }
+    Mock GetInstallationExtensionRoot { resolve-path testdrive:\extensions }
+    Mock Remove-Module { }
+    Mock RunConventions { }
+
+    ExecuteInstallation `
+        -PackageName 'fuzzy-bunny' `
+        -PackageVersion '9.3.1' `
+        -EnvironmentName 'prod-like' `
+        -DeployedFolderPath 'testdrive:\package-target' `
+        -DeploymentSourcePath 'testdrive:\pdtemp' `
+        -Settings @{ 'somesetting' = 'somevalue' }
+
+    It 'initializes the extensions' {
+        'testdrive:\called.txt' | should exist
+    }
+
+    It 'makes the deployment context available to the extensions' {
+        'testdrive:\parms.txt' | should exist
+    }
+
+    It 'makes the helper cmdlets available to the extensions' {
+        Assert-MockCalled Register-DeploymentScript
+    }
+}
+
+Describe 'ExecuteInstallation, with an extension that fails to initialize' {
+
+    $exception = Capture {
+        Setup -Dir extensions\extension1
+        Setup -File extensions\extension1\initialize.ps1 @'
+    throw "badness"
+'@
+
+        Mock Import-Module { } #-ParameterFilter { $Name -like '*Installer.psm1' }
+        Mock Register-DeploymentScript { }
+        Mock GetInstallationExtensionRoot { resolve-path testdrive:\extensions }
+        Mock Remove-Module { }
+        Mock RunConventions { }
+
+        ExecuteInstallation `
+            -PackageName 'fuzzy-bunny' `
+            -PackageVersion '9.3.1' `
+            -EnvironmentName 'prod-like' `
+            -DeployedFolderPath 'testdrive:\package-target' `
+            -DeploymentSourcePath 'testdrive:\pdtemp' `
+            -Settings @{ 'somesetting' = 'somevalue' }        
+    }
+
+    It 'fails the installation' {
+        $exception | should not be $null
+    }
+}
+
 Describe 'ExecuteInstallation (as bdd)' {
+    Mock Import-Module { } #-ParameterFilter { $Name -like '*Installer.psm1' }
+    Mock Remove-Module { }
     
     $global:pester_pd_test_initialization_executed = $false
     $global:pester_pd_test_initialization_context_value = $null
