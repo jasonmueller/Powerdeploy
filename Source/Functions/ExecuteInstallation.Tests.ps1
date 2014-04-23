@@ -8,9 +8,10 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 Describe 'ExecuteInstallation' {
 
-    Mock RunConventions { $global:TestContext.conventionsHadContext = $global:TestContext.contextCalled }
+    # Mock RunConventions { $global:TestContext.conventionsHadContext = $global:TestContext.contextCalled }
     Mock Set-DeploymentContext { $global:TestContext.contextCalled = $true } 
     Mock Import-Module { } #-ParameterFilter { $Name -like '*Installer.psm1' }
+    Mock GetInstallationExtensionRoot { resolve-path testdrive:\ }
     #Mock Import-Module { } -ParameterFilter { $Name -like '*Installer.psm1' }
 
     ExecuteInstallation `
@@ -31,21 +32,6 @@ Describe 'ExecuteInstallation' {
     It 'configures the deployment context settings' {
         Assert-MockCalled Set-DeploymentContext -ParameterFilter { (&{$Variables}).somesetting -eq 'somevalue' }
     }
-
-    It 'runs conventions with old-style context' {
-        Assert-MockCalled RunConventions -ParameterFilter { 
-            $deploymentContext.Parameters.PackageId -eq 'fuzzy-bunny' `
-            -and $deploymentContext.Parameters.PackageVersion -eq '9.3.1' `
-            -and $deploymentContext.Parameters.EnvironmentName -eq 'prod-like' `
-            -and $deploymentContext.Parameters.ExtractedPackagePath -eq 'testdrive:\package-target' `
-            -and $deploymentContext.Settings.somesetting -eq 'somevalue'
-        }
-    }
-
-    It 'makes context available to conventions' {
-        $global:TestContext.conventionsHadContext | should be $true
-    }
-
 }
 
 Describe 'ExecuteInstallation, with extensions' {
@@ -61,7 +47,7 @@ Describe 'ExecuteInstallation, with extensions' {
     Mock Register-DeploymentScript { }
     Mock GetInstallationExtensionRoot { resolve-path testdrive:\extensions }
     Mock Remove-Module { }
-    Mock RunConventions { }
+    # Mock RunConventions { }
 
     ExecuteInstallation `
         -PackageName 'fuzzy-bunny' `
@@ -119,6 +105,7 @@ Describe 'ExecuteInstallation (as bdd)' {
     $global:pester_pd_test_initialization_executed = $false
     $global:pester_pd_test_initialization_context_value = $null
     $global:pester_pd_test_preinstall_executed = $false
+    $global:pester_pd_test_postinstall_executed = $false
 
     Setup -Dir 'package-target'
     Setup -Dir 'package-target\content'
@@ -128,6 +115,7 @@ Describe 'ExecuteInstallation (as bdd)' {
 $global:pester_pd_test_initialization_executed = $true
 
 Register-DeploymentScript -Pre -Phase Install -Script { $global:pester_pd_test_preinstall_executed = $true; $global:pester_pd_test_initialization_context_value = Get-DeploymentPackageName }
+Register-DeploymentScript -Post -Phase Install -Script { $global:pester_pd_test_postinstall_executed = $true }
 '@
 
     ExecuteInstallation `
@@ -144,6 +132,10 @@ Register-DeploymentScript -Pre -Phase Install -Script { $global:pester_pd_test_p
 
     It 'executes pre-Install scripts' {
         $global:pester_pd_test_preinstall_executed | should be $true
+    }
+
+    It 'executes post-Install scripts' {
+        $global:pester_pd_test_postinstall_executed | should be $true
     }
 
     It 'supplies the deployment context to the initialization script' {

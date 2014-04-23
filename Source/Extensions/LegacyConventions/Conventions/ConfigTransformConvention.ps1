@@ -12,7 +12,7 @@
 		)
 
 		$scriptPath = Split-Path ((Get-PSCallStack)[0]).ScriptName -Parent
-		$modulesPath = Join-Path (Split-Path $scriptPath -Parent) Modules
+		$modulesPath = Join-Path $scriptPath Modules
 		$sourcePath = $PowerDeploymentContext.Parameters.ExtractedPackagePath
 
 		Import-Module (Join-Path $modulesPath PS4) -Verbose:$false

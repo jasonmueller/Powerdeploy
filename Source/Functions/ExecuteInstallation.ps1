@@ -16,18 +16,8 @@ function ExecuteInstallation (
     # "consumable" side that is exposed to conventions and deployment packages.
     # For this reason, we don't want them to rely on "internals", but rather on
     # the installation module with it's published commandlets, etc.
-    $context =  @{
-        Parameters = @{
-            PackageId = $PackageName
-            PackageVersion = $PackageVersion
-            EnvironmentName = $EnvironmentName
-            DeploymentFilesPath = $DeploymentSourcePath
-            ExtractedPackagePath = $DeployedFolderPath
-        }
-        Settings = $settings
-    }
 
-    $newStyleContext = @{
+    $context = @{
         PackageName = $PackageName
         PackageVersion = $PackageVersion
         DeployedFolderPath = $DeployedFolderPath
@@ -35,7 +25,7 @@ function ExecuteInstallation (
         Variables = $Settings
     }
 
-    Set-DeploymentContext @newStyleContext
+    Set-DeploymentContext @context
     
     GetInstallationExtensions | ForEach-Object { 
         $extension = $_
@@ -53,7 +43,10 @@ function ExecuteInstallation (
     Write-Verbose "Executing pre-install scripts..."
     Get-RegisteredDeploymentScript -Pre -Phase Install | Invoke-RegisteredDeploymentScript
 
-    RunConventions (Resolve-Path $PSScriptRoot\..\Conventions\*Convention.ps1) $context
+    get-command -module installer | write-host
+
+    Write-Verbose "Executing post-install scripts..."
+    Get-RegisteredDeploymentScript -Post -Phase Install | Invoke-RegisteredDeploymentScript
 
     Write-Verbose 'Installation finished.'
 

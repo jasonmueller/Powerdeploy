@@ -1,7 +1,7 @@
 ﻿$here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests.", ".")
 $convention = & "$here\$sut"
-. $here\..\TestHelpers.ps1
+. $here\..\..\..\TestHelpers.ps1
 
 Describe 'ConfigSettingsConvention' {
 

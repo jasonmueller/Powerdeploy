@@ -8,6 +8,7 @@ Resolve-Path $here\Functions\*.ps1 |
 Export-ModuleMember `
     Get-DeploymentEnvironmentName, `
     Get-DeploymentFolder,
+    Get-DeploymentContext,
     Set-DeploymentContext,
     Register-DeploymentScript,
     Get-RegisteredDeploymentScript,
