@@ -18,7 +18,9 @@ function Get-CalledMock {
 
     $global:mockCallHistory | ? CommandName -eq $CommandName | % { 
         $mock = $_
-        Write-Host $_.CommandName "was called with " 
-        $mock.BoundParams | convertto-json | write-host
+
+        New-Object PSObject -Property @{
+            BoundParameters = $mock.BoundParams
+        }
     }
 }
