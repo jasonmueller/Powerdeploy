@@ -1,6 +1,6 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 . $here\..\Common.Tests.ps1
-. $here\..\TestHelpers.ps1
+. $here\..\..\TestHelpers.ps1
 
 Describe 'Register-DeploymentScript, with a pre-installation script' {
 
