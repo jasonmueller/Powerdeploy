@@ -43,8 +43,6 @@ function ExecuteInstallation (
     Write-Verbose "Executing pre-install scripts..."
     Get-RegisteredDeploymentScript -Pre -Phase Install | Invoke-RegisteredDeploymentScript
 
-    get-command -module installer | write-host
-
     Write-Verbose "Executing post-install scripts..."
     Get-RegisteredDeploymentScript -Post -Phase Install | Invoke-RegisteredDeploymentScript
 
