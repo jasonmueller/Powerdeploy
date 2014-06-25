@@ -11,6 +11,14 @@
 			$PowerDeploymentContext
 		)
 		
+		if ((Get-Module WebAdministration -ListAvailable).Length -eq 0) {
+				Write-Host ('WebAdministration module was not found. '`
+					+ 'The convention will be skipped.')
+				return
+		}
+
+		Import-Module WebAdministration -Verbose:$false		
+
 		$packageId = $PowerDeploymentContext.Parameters.PackageId
 		$sourcePath = $PowerDeploymentContext.Parameters.ExtractedPackagePath
 		$environmentName = $PowerDeploymentContext.Parameters.EnvironmentName
