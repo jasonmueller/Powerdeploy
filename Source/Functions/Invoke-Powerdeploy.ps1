@@ -84,10 +84,27 @@ function Invoke-Powerdeploy {
 	Write-Verbose ('-'*80)
 	
 	Write-Verbose "Executing installation on target..."
-	$remoteCommands | ForEach-Object { ExecuteCommandInSession (Invoke-Expression "{ $_ }") }
+
+	$exception = $null
+	try {
+		$remoteCommands | ForEach-Object { ExecuteCommandInSession (Invoke-Expression "{ $_ }") }
+	}
+	catch {
+		$exception = $_.Exception
+	}
 
 	Write-Verbose ('-'*80)
-	Write-Verbose "  Remote execution complete."
+	if ($exception -eq $null) {
+		Write-Verbose "Remote execution complete."
+	}
+	else {
+		Write-Verbose "Remote execution failed."
+		Write-Warning $exception.Message
+		if ($exception -is [System.Management.Automation.RemoteException]) {
+			Write-Verbose "Extended error information:"
+			$exception.SerializedRemoteInvocationInfo | ConvertTo-Json | Write-Verbose
+		}
+	}
 	Write-Verbose ('-'*80) 
 
 	if ($remoteSession -ne $null) {
@@ -102,6 +119,10 @@ function Invoke-Powerdeploy {
 	}
 	catch {
 		# Don't fail the deployment if we can't clean up files.
+	}
+
+	if ($exception -ne $null){
+		Write-Error $exception
 	}
 }
 
