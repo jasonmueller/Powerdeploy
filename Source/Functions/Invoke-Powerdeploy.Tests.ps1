@@ -88,7 +88,7 @@ Describe 'Invoke-Powerdeploy, with a package archive' {
             -RemotePackageTargetPath 'c:\mypackages\gibber' `
             -PackageArchive testdrive:\somepackage_1.2.3.zip `
             -Environment production `
-            -Variables @{"variable1" = "some ad-hoc value"}
+            -Variable @{"variable1" = "some ad-hoc value"}
 
         It 'includes ad-hoc variables as settings when installing' {
             Assert-MockCalled Install-Package -ParameterFilter {
@@ -139,7 +139,7 @@ Describe 'Invoke-Powerdeploy, with a package archive' {
             -PackageArchive testdrive:\somepackage_1.2.3.zip `
             -Environment production `
             -VariableUri 'uri://blah/blah' `
-            -Variables @{"variable1" = "some ad-hoc value"; "variable2" = "ad-hoc override"}
+            -Variable @{"variable1" = "some ad-hoc value"; "variable2" = "ad-hoc override"}
 
         It 'includes the settings retrieved from the uri in the target installation' {
             Assert-MockCalled Install-Package -ParameterFilter {

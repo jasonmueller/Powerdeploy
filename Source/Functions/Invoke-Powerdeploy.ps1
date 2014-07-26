@@ -9,7 +9,7 @@ function Invoke-Powerdeploy {
 		[System.Management.Automation.PSCredential]$Credential,
 		[string]$RemotePackageTargetPath,
 		[System.Uri][Alias("SettingsUri")]$VariableUri,
-		[Hashtable]$Variables,
+		[Hashtable]$Variable,
 		[scriptblock]$PostInstallScript = { }	
 	)
 
@@ -81,7 +81,7 @@ function Invoke-Powerdeploy {
 		DeploymentTempRoot =  $localPackageTempDir
 		PostInstallScript = $PostInstallScript
 		PackageTargetPath = $RemotePackageTargetPath
-		Variable = (mergeSettingsWithOverride $settings $Variables)
+		Variable = (mergeSettingsWithOverride $settings $Variable)
 		Verbose = $PSBoundParameters['Verbose'] -eq $true
 	} | ConvertTo-StringData | Out-String
 	# if ($RemotePackageTargetPath -ne $null -and $RemotePackageTargetPath.Length -gt 1) { $remoteCommand += " -PackageTargetPath $RemotePackageTargetPath" }
