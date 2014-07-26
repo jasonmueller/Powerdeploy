@@ -33,7 +33,12 @@ Describe 'Invoke-Powerdeploy, with a package archive' {
         Mock ExecuteCommandInSession { &$ScriptBlock }
         Mock Install-Package { }
 
-        Invoke-Powerdeploy -ComputerName SERVER1 -RemotePackageTargetPath 'c:\mypackages\gibber' -PackageArchive testdrive:\somepackage_1.2.3.zip -Environment production -PostInstallScript { "hello" }
+        Invoke-Powerdeploy `
+            -ComputerName SERVER1 `
+            -RemotePackageTargetPath 'c:\mypackages\gibber' `
+            -PackageArchive testdrive:\somepackage_1.2.3.zip `
+            -Environment production `
+            -PostInstallScript { "hello" } 
 
         It 'deploys the package and module to the deployment staging directory on the target' {
             Assert-MockCalled DeployFilesToTarget -ParameterFilter {
@@ -64,6 +69,34 @@ Describe 'Invoke-Powerdeploy, with a package archive' {
         }
     } 
 
+    Describe 'Invoke-Powerdeploy, with ad-hoc variables' {
+        Setup -File 'somepackage_1.2.3.zip' ''
+
+        Mock Import-Module { }
+        Mock Set-ExecutionPolicy { }
+        Mock CreateRemoteSession { }
+        Mock DeployFilesToTarget { }
+        Mock Remove-PSSession { }
+        Mock GetPackageTempDirectoryAndShareOnTarget { @{ Share = "target-share"; LocalPath = "c:\target-local" }}
+        Mock SetCurrentPowerDeployCommandSession { }
+        Mock ExecuteCommandInSession { &$ScriptBlock }
+        Mock Install-Package { }
+        Mock GetSettingsFromUri { @{ SomeSetting = 'some-value' } } -ParameterFilter { $uri -eq 'uri://blah/blah' -and $environmentName -eq 'production' -and $computer -eq 'SERVER1' }
+
+        Invoke-Powerdeploy `
+            -ComputerName SERVER1 `
+            -RemotePackageTargetPath 'c:\mypackages\gibber' `
+            -PackageArchive testdrive:\somepackage_1.2.3.zip `
+            -Environment production `
+            -Variables @{"variable1" = "some ad-hoc value"}
+
+        It 'includes ad-hoc variables as settings when installing' {
+            Assert-MockCalled Install-Package -ParameterFilter {
+                ($Variable).variable1 | should be 'some ad-hoc value'
+            }
+        }
+    }
+
     Describe 'Invoke-Powerdeploy, with a settings uri' {
         Setup -File 'somepackage_1.2.3.zip' ''
 
@@ -78,11 +111,51 @@ Describe 'Invoke-Powerdeploy, with a package archive' {
         Mock Install-Package { }
         Mock GetSettingsFromUri { @{ SomeSetting = 'some-value' } } -ParameterFilter { $uri -eq 'uri://blah/blah' -and $environmentName -eq 'production' -and $computer -eq 'SERVER1' }
 
-        Invoke-Powerdeploy -ComputerName SERVER1 -PackageArchive testdrive:\somepackage_1.2.3.zip -Environment production -SettingsUri 'uri://blah/blah'
+        Invoke-Powerdeploy -ComputerName SERVER1 -PackageArchive testdrive:\somepackage_1.2.3.zip -Environment production -VariableU 'uri://blah/blah'
 
         It 'includes the settings retrieved from the uri in the target installation' {
             Assert-MockCalled Install-Package -ParameterFilter {
-                (&{$Settings}).SomeSetting | should be 'some-value'
+                (&{$Variable}).SomeSetting | should be 'some-value'
+            }
+        }
+    }
+
+    Describe 'Invoke-Powerdeploy, with a settings uri and ad-hoc variables' {
+        Setup -File 'somepackage_1.2.3.zip' ''
+
+        Mock Import-Module { }
+        Mock Set-ExecutionPolicy { }
+        Mock CreateRemoteSession { }
+        Mock DeployFilesToTarget { }
+        Mock Remove-PSSession { }
+        Mock GetPackageTempDirectoryAndShareOnTarget { @{ Share = "target-share"; LocalPath = "c:\target-local" }}
+        Mock SetCurrentPowerDeployCommandSession { }
+        Mock ExecuteCommandInSession { &$ScriptBlock }
+        Mock Install-Package { }
+        Mock GetSettingsFromUri { @{ SomeSetting = 'some-value'; variable2 = 'original value' } } -ParameterFilter { $uri -eq 'uri://blah/blah' -and $environmentName -eq 'production' -and $computer -eq 'SERVER1' }
+
+        Invoke-Powerdeploy `
+            -ComputerName SERVER1 `
+            -PackageArchive testdrive:\somepackage_1.2.3.zip `
+            -Environment production `
+            -VariableUri 'uri://blah/blah' `
+            -Variables @{"variable1" = "some ad-hoc value"; "variable2" = "ad-hoc override"}
+
+        It 'includes the settings retrieved from the uri in the target installation' {
+            Assert-MockCalled Install-Package -ParameterFilter {
+                ($Variable).SomeSetting | should be 'some-value'
+            }
+        }
+
+        It 'includes ad-hoc variables as settings when installing' {
+            Assert-MockCalled Install-Package -ParameterFilter {
+                ($Variable).variable1 | should be 'some ad-hoc value'
+            }
+        }
+
+        It 'overrides settings retrieved from the uri with a matching ad-hoc setting' {
+            Assert-MockCalled Install-Package -ParameterFilter {
+                ($Variable).variable2 | should be 'ad-hoc override'
             }
         }
     }

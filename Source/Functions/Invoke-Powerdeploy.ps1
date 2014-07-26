@@ -8,9 +8,29 @@ function Invoke-Powerdeploy {
 		[string]$ComputerName = "localhost",
 		[System.Management.Automation.PSCredential]$Credential,
 		[string]$RemotePackageTargetPath,
-		[System.Uri]$SettingsUri,
+		[System.Uri][Alias("SettingsUri")]$VariableUri,
+		[Hashtable]$Variables,
 		[scriptblock]$PostInstallScript = { }	
 	)
+
+	function mergeSettingsWithOverride($target, $source) {
+		if ($source -ne $null) {
+			$keys = $source.GetEnumerator() | Where-Object { $_ -ne $null} | ForEach-Object { $_.Key }
+
+			$keys | ForEach-Object {
+				$key = $_
+				if ($target.ContainsKey($key)) {
+					$target.Remove($key)
+				}
+			}
+
+		    $source + $target
+		}
+		else {
+			$target
+		}
+	}
+
 	Write-Verbose ('='*80)
 	Write-Verbose "powerdeploy $global:PDVersion"
 	Write-Verbose ('='*80)
@@ -34,18 +54,18 @@ function Invoke-Powerdeploy {
 	$localPackageTempDir = [System.IO.Path]::Combine($localTempRoot, $deploymentId)
 	$remotePackageTempDir = Join-Path $remoteTempRoot $deploymentId
 		
-	if ($SettingsUri -ne $null) {
-    	$settings = GetSettingsFromUri $SettingsUri $Environment $ComputerName $Role
+	if ($VariableUri -ne $null) {
+    	$settings = GetSettingsFromUri $VariableUri $Environment $ComputerName $Role
 	}
 	else {
-		$settings = @{}
+		$settings = @{ }
 	}
 
 	# Explicitly set the execution policy on the target so we don't need to depend
 	# on it being set for us.
 	ExecuteCommandInSession { Set-ExecutionPolicy RemoteSigned -Scope Process }
 
-	DeployFilesToTarget "$remotePackageTempDir" "$PSScriptRoot\.." $PackageArchive -Settings $settings -Credential $Credential
+	DeployFilesToTarget "$remotePackageTempDir" "$PSScriptRoot\.." $PackageArchive -Credential $Credential
 
 	# Execute deployment script on remote.
 	$packageFileName = Split-Path $PackageArchive -Leaf
@@ -61,7 +81,7 @@ function Invoke-Powerdeploy {
 		DeploymentTempRoot =  $localPackageTempDir
 		PostInstallScript = $PostInstallScript
 		PackageTargetPath = $RemotePackageTargetPath
-		Settings = $settings
+		Variable = (mergeSettingsWithOverride $settings $Variables)
 		Verbose = $PSBoundParameters['Verbose'] -eq $true
 	} | ConvertTo-StringData | Out-String
 	# if ($RemotePackageTargetPath -ne $null -and $RemotePackageTargetPath.Length -gt 1) { $remoteCommand += " -PackageTargetPath $RemotePackageTargetPath" }

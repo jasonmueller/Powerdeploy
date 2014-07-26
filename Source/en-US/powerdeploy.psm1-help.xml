@@ -304,7 +304,7 @@ This value is available to post install scripts (see -PostInstallScript) using t
 				<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			</command:parameter>
 			<command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
-				<maml:name>SettingsUri</maml:name>
+				<maml:name>VariableUri</maml:name>
 				<maml:description>
 					<maml:para>Specifies the location of the deployment variables used for the deployment.</maml:para>
 				</maml:description>
@@ -399,7 +399,7 @@ This value is available to post install scripts (see -PostInstallScript) using t
 			<dev:defaultValue></dev:defaultValue>
 		</command:parameter>
 		<command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
-			<maml:name>SettingsUri</maml:name>
+			<maml:name>VariableUri</maml:name>
 			<maml:description>
 				<maml:para>Specifies the location of the deployment variables used for the deployment.</maml:para>
 			</maml:description>

@@ -8,7 +8,7 @@ param (
 	[string]$DeploymentTempRoot,
 	[string]$Role,
 	[string]$PackageTargetPath,
-	[Hashtable]$Settings,
+	[Hashtable][Alias("Settings")]$Variable,
     [ScriptBlock]$PostInstallScript = { }
 )
 	Write-Verbose ('='*80)
@@ -49,7 +49,7 @@ param (
 		-EnvironmentName $Environment `
 		-DeployedFolderPath $extractionPath `
 		-DeploymentSourcePath $DeploymentTempRoot `
-		-Settings $Settings
+		-Settings $Variable
 	
 	Write-Verbose 'Package installation completed without errors.'
 

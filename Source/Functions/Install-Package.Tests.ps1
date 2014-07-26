@@ -15,7 +15,7 @@ Describe 'Install-Package' {
         -DeploymentTempRoot testdrive:\pdtemp `
         -PackageTargetPath testdrive:\deploytome `
         -PostInstallScript { $PowerdeployDeploymentParameters | ConvertTo-Json | Out-File testdrive:\params.json } `
-        -Settings @{ 'somesetting' = 'some-value' }
+        -Variable @{ 'somesetting' = 'some-value' }
 
     It 'executes the installation' {
         Assert-MockCalled ExecuteInstallation -Exactly 1
