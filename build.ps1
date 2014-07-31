@@ -21,6 +21,15 @@ task Squirt {
     Copy-Item $sourceFolder\* $buildFolder -Recurse -Exclude .git
     Get-ChildItem $buildFolder *.Tests.ps1 -Recurse | Remove-Item
     Get-ChildItem $buildFolder TestHelpers.ps1 | Remove-Item
+
+    $version -match 'v(?<versionnum>[0-9]+\.[0-9]+(.[0-9]+)?)'
+    New-ModuleManifest `
+      -Author 'Jason Mueller' `
+      -CompanyName 'Suspended Gravity, LLC' `
+      -Path $buildFolder\Powerdeploy.psd1 `
+      -ModuleVersion $matches.versionnum `
+      -Guid 'cb196f97-00e0-416c-b201-a7b887b6d257' `
+      -RootModule Powerdeploy.psm1
 }
 
 task Test { 
