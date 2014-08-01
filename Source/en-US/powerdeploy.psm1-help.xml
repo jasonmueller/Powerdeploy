@@ -391,13 +391,6 @@ This value is available to post install scripts (see -PostInstallScript) using t
 				<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			</command:parameter>
 			<command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
-				<maml:name>VariableUri</maml:name>
-				<maml:description>
-					<maml:para>Specifies the location of the deployment variables used for the deployment.</maml:para>
-				</maml:description>
-				<command:parameterValue required="true" variableLength="false">Uri</command:parameterValue>
-			</command:parameter>
-			<command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
 				<maml:name>Variable</maml:name>
 				<maml:description>
 					<maml:para>Specifies name value pairs to include as deployment variables made available to conventions and custom deployment scripts.</maml:para>
@@ -488,18 +481,6 @@ This value is available to post install scripts (see -PostInstallScript) using t
 			<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			<dev:type>
 				<maml:name>String</maml:name>
-				<maml:uri/>
-			</dev:type>
-			<dev:defaultValue></dev:defaultValue>
-		</command:parameter>
-		<command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
-			<maml:name>VariableUri</maml:name>
-			<maml:description>
-				<maml:para>Specifies the location of the deployment variables used for the deployment.</maml:para>
-			</maml:description>
-			<command:parameterValue required="true" variableLength="false">Uri</command:parameterValue>
-			<dev:type>
-				<maml:name>Uri</maml:name>
 				<maml:uri/>
 			</dev:type>
 			<dev:defaultValue></dev:defaultValue>
@@ -610,31 +591,7 @@ Any variables in the command are evaluated on the remote computer.</maml:para>
 				</maml:description>
 				<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			</command:parameter>
-		</command:syntaxItem>
-		<command:syntaxItem>
-			<maml:name>Resolve-DeploymentVariable</maml:name>
-			<command:parameter required="true" variableLength="true" globbing="false" pipelineInput="true (ByValue)" position="0">
-				<maml:name>InputObject</maml:name>
-				<maml:description>
-					<maml:para>Resolves the variables represented by the specified deployment variables.  Enter a variable that contains the objects, or type a command or expression that gets the objects.</maml:para>
-				</maml:description>
-				<command:parameterValue required="true" variableLength="true">PSObject[]</command:parameterValue>
-			</command:parameter>
-			<command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
-				<maml:name>EnvironmentName</maml:name>
-				<maml:description>
-					<maml:para>Resolves variables given a deployment to the specified environment.</maml:para>
-				</maml:description>
-				<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-			</command:parameter>
-			<command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
-				<maml:name>ComputerName</maml:name>
-				<maml:description>
-					<maml:para>Resolves variables given a deployment to the specified computer.</maml:para>
-				</maml:description>
-				<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-			</command:parameter>
-			<command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+			<command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
 				<maml:name>AsHashTable</maml:name>
 				<maml:description>
 					<maml:para>Outputs resolved values as a hashtable rather than an array of objects.</maml:para>
@@ -680,7 +637,7 @@ Any variables in the command are evaluated on the remote computer.</maml:para>
 			</dev:type>
 			<dev:defaultValue></dev:defaultValue>
 		</command:parameter>
-		<command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+		<command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
 			<maml:name>AsHashTable</maml:name>
 			<maml:description>
 				<maml:para>Outputs resolved values as a hashtable rather than an array of objects.</maml:para>
