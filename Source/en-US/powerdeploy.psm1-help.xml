@@ -52,23 +52,6 @@
 				<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			</command:parameter>
 		</command:syntaxItem>
-		<command:syntaxItem>
-			<maml:name>Get-DeploymentVariable</maml:name>
-			<command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
-				<maml:name>SettingsPath</maml:name>
-				<maml:description>
-					<maml:para>Specifies the location of the deployment variables to retrieve.</maml:para>
-				</maml:description>
-				<command:parameterValue required="true" variableLength="false">Uri</command:parameterValue>
-			</command:parameter>
-			<command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
-				<maml:name>Computer</maml:name>
-				<maml:description>
-					<maml:para>Gets variables only for the specified computer.</maml:para>
-				</maml:description>
-				<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-			</command:parameter>
-		</command:syntaxItem>
 	</command:syntax>
 	<command:parameters>
 		<command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
@@ -99,18 +82,6 @@
 			<maml:name>Name</maml:name>
 			<maml:description>
 				<maml:para>Gets variables with the specified name.</maml:para>
-			</maml:description>
-			<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-			<dev:type>
-				<maml:name>String</maml:name>
-				<maml:uri/>
-			</dev:type>
-			<dev:defaultValue></dev:defaultValue>
-		</command:parameter>
-		<command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
-			<maml:name>Computer</maml:name>
-			<maml:description>
-				<maml:para>Gets variables only for the specified computer.</maml:para>
 			</maml:description>
 			<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			<dev:type>
@@ -633,7 +604,7 @@ Any variables in the command are evaluated on the remote computer.</maml:para>
 				<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			</command:parameter>
 			<command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
-				<maml:name>Computer</maml:name>
+				<maml:name>ComputerName</maml:name>
 				<maml:description>
 					<maml:para>Resolves variables given a deployment to the specified computer.</maml:para>
 				</maml:description>
@@ -657,7 +628,7 @@ Any variables in the command are evaluated on the remote computer.</maml:para>
 				<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			</command:parameter>
 			<command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
-				<maml:name>Computer</maml:name>
+				<maml:name>ComputerName</maml:name>
 				<maml:description>
 					<maml:para>Resolves variables given a deployment to the specified computer.</maml:para>
 				</maml:description>
@@ -698,7 +669,7 @@ Any variables in the command are evaluated on the remote computer.</maml:para>
 			<dev:defaultValue></dev:defaultValue>
 		</command:parameter>
 		<command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
-			<maml:name>Computer</maml:name>
+			<maml:name>ComputerName</maml:name>
 			<maml:description>
 				<maml:para>Resolves variables given a deployment to the specified computer.</maml:para>
 			</maml:description>

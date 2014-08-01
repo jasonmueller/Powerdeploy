@@ -36,6 +36,7 @@ Export-ModuleMember `
         Install-Package, `
         Invoke-Powerdeploy, `
         Get-DeploymentVariable, `
+        Resolve-DeploymentVariable `
     -Alias `
         Publish-Package
 
