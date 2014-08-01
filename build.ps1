@@ -21,6 +21,7 @@ task Squirt {
     Copy-Item $sourceFolder\* $buildFolder -Recurse -Exclude .git
     Get-ChildItem $buildFolder *.Tests.ps1 -Recurse | Remove-Item
     Get-ChildItem $buildFolder TestHelpers.ps1 | Remove-Item
+    Get-ChildItem $buildFolder Test.xml | Remove-Item
 
     $version -match 'v(?<versionnum>[0-9]+\.[0-9]+(.[0-9]+)?)'
     New-ModuleManifest `
