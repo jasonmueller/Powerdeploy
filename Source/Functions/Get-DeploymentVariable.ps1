@@ -1,7 +1,7 @@
-# .ExternalHelp  powerdeploy.psm1-help.xml
 function Get-DeploymentVariable {
-     [CmdletBinding(DefaultParameterSetName="__AllParameterSets")]
-     param (
+    # .ExternalHelp ..\powerdeploy.psm1-help.xml
+    [CmdletBinding(DefaultParameterSetName="__AllParameterSets")]
+    param (
         [System.Uri]
         [Parameter(Mandatory = $true)]
         $SettingsPath,

@@ -1,16 +1,17 @@
-# .ExternalHelp  powerdeploy.psm1-help.xml
 function Install-Package {
-[CmdletBinding()] 
-param (
-	[string][parameter(Position = 0, Mandatory = $true)]$PackageArchive,
-	[string][parameter(Position = 1, Mandatory = $true)]$Environment,
-	[parameter(Mandatory = $true)]
-	[string]$DeploymentTempRoot,
-	[string]$Role,
-	[string]$PackageTargetPath,
-	[Hashtable][Alias("Settings")]$Variable,
-    [ScriptBlock]$PostInstallScript = { }
-)
+	# .ExternalHelp  powerdeploy.psm1-help.xml
+	[CmdletBinding()] 
+	param (
+		[string][parameter(Position = 0, Mandatory = $true)]$PackageArchive,
+		[string][parameter(Position = 1, Mandatory = $true)]$Environment,
+		[parameter(Mandatory = $true)]
+		[string]$DeploymentTempRoot,
+		[string]$Role,
+		[string]$PackageTargetPath,
+		[Hashtable][Alias("Settings")]$Variable,
+	    [ScriptBlock]$PostInstallScript = { }
+	)
+
 	Write-Verbose ('='*80)
 	Write-Verbose ("powerdeploy $global:PDVersion on $env:computername")
 	Write-Verbose ('='*80)
