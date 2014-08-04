@@ -1,4 +1,4 @@
-function Get-DeploymentVariable {
+function Get-ConfigurationVariable {
     # .ExternalHelp ..\powerdeploy.psm1-help.xml
     [CmdletBinding(DefaultParameterSetName="__AllParameterSets")]
     param (

@@ -18,13 +18,13 @@ function Have($value, $expected) {
         $differences -eq $null
 }
 
-Describe 'Get-DeploymentVariable' {
+Describe 'Get-ConfigurationVariable' {
 
     Context 'with a non-file URI' {
 
         $uri = 'http://someserver'
 
-        $result = Capture { Get-DeploymentVariable -SettingsPath $uri }
+        $result = Capture { Get-ConfigurationVariable -SettingsPath $uri }
         
         It 'throws an exception' {
             $result.message | should be 'Only filesystem based settings are currently supported.'
@@ -41,7 +41,7 @@ Describe 'Get-DeploymentVariable' {
 
         $uri = 'file://W:\somedirectory'
 
-        $result = Capture { Get-DeploymentVariable -SettingsPath $uri }
+        $result = Capture { Get-ConfigurationVariable -SettingsPath $uri }
 
         It 'throws an result' {
             $result.message | should be 'No settings file was found in the specified path.'
@@ -66,7 +66,7 @@ Describe 'Get-DeploymentVariable' {
 
         $uri = 'file://W:\somedirectory'
 
-        $settings = Get-DeploymentVariable -SettingsPath $uri
+        $settings = Get-ConfigurationVariable -SettingsPath $uri
 
         It 'returns all settings for all environments' {
             $settings | Measure-Object | Select -Expand Count | should be 2
@@ -108,7 +108,7 @@ Describe 'Get-DeploymentVariable' {
 
         $uri = 'file://W:\somedirectory'
 
-        $settings = Get-DeploymentVariable -SettingsPath $uri
+        $settings = Get-ConfigurationVariable -SettingsPath $uri
 
         It 'returns environment-scoped settings' {
             $settings | ? {
@@ -176,7 +176,7 @@ Describe 'Get-DeploymentVariable' {
 
         Context 'with an environment name' {
 
-            $settings = Get-DeploymentVariable -SettingsPath $uri -Environment 'prod'
+            $settings = Get-ConfigurationVariable -SettingsPath $uri -Environment 'prod'
 
             It 'returns only settings scoped to the environment' {
                 $settings | Measure-Object | Select -Expand count | should be 3
@@ -203,7 +203,7 @@ Describe 'Get-DeploymentVariable' {
 
         # Context 'with an environment and computer name' {
 
-        #     $settings = Get-DeploymentVariable -SettingsPath $uri -Environment 'prod' -Computer 'rover1'
+        #     $settings = Get-ConfigurationVariable -SettingsPath $uri -Environment 'prod' -Computer 'rover1'
 
         #     It 'returns only settings scoped to the environment or to the environment and computer' {
         #         $settings | Measure-Object | Select -Expand count | should be 2
