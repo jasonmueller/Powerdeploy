@@ -33,6 +33,9 @@ Describe 'Install-Package, given a test package "TestPackage1"' {
         -DeploymentTempRoot $tempFolder `
         -PackageTargetPath $extractedFolder 
 
+    # Debugging
+    Get-Content $packageLog | Write-Host
+
     # It 'executes pre-install scripts' {
 
     #     Get-Content $packageLog | Write-Host
@@ -40,13 +43,24 @@ Describe 'Install-Package, given a test package "TestPackage1"' {
     # }
 
     It 'executes init script' {
-
-        Get-Content $packageLog | Select-String 'init script executed' | should not be $null
+        $packageLog | should contain 'init script executed'
     }
 
+    It 'provides the extracted package path through Get-DeploymentFolder' {
+        $packageLog | should contain ([Regex]::Escape("init: Get-DeploymentFolder: $extractedFolder"))
+    }
+
+    It 'provides deployment variables through Get-DeploymentVariable' {
+        $packageLog | should contain 'init: Get-DeploymentVariable url: http://suspendedgravity.com'
+        $packageLog | should contain 'init: Get-DeploymentVariable connection: mssql://mydatabase'
+    }
     # It 'executes install script' {
 
     #     Get-Content $packageLog | Select-String 'install script executed' | should not be $null
+    # }
+
+    # It 'executes deployment scripts in the correct order' {
+        
     # }
 }
 

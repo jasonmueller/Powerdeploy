@@ -10,6 +10,7 @@ Export-ModuleMember `
     Get-DeploymentFolder,
     Get-DeploymentContext,
     Set-DeploymentContext,
+    Get-DeploymentVariable,
     Register-DeploymentScript,
     Get-RegisteredDeploymentScript,
     Invoke-RegisteredDeploymentScript
