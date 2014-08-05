@@ -2,13 +2,14 @@ properties {
   $buildFolder = Join-Path $PSScriptRoot '_build'
   $packageFolder = Join-Path $PSScriptRoot '_package'
   $sourceFolder = Join-Path $PSScriptRoot 'Source'
+  $acceptanceTestFolder = Join-Path $PSScriptRoot 'AcceptanceTests'
   $version = git describe --tags --always --dirty
   $changeset = 'n/a'
 }
 
 task default -depends Build
 task Build -depends Clean, Test, Package
-task Package -depends Version, Squirt, Unversion, Zip
+task Package -depends Version, Squirt, Unversion, Zip, AcceptanceTest
 
 task Zip {
     Copy-Item $buildFolder $packageFolder\temp\Powerdeploy -Recurse
@@ -35,6 +36,10 @@ task Squirt {
 
 task Test { 
     exec {."$PSScriptRoot\pester\bin\pester.bat" "$sourceFolder"}
+}
+
+task AcceptanceTest {
+    exec {."$PSScriptRoot\pester\bin\pester.bat" "$acceptanceTestFolder"}
 }
 
 task Version {
