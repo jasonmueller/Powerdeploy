@@ -90,7 +90,18 @@ param (
 	"  Beginning remote execution on $ComputerName..." 
 	('-'*80)
 	
-	Invoke-Command @parameters
+    try {
+	   Invoke-Command @parameters
+    }
+    catch {
+        $exception = $_.exception
+        Write-Verbose "Remote execution failed."
+        Write-Warning $exception.Message
+        if ($exception -is [System.Management.Automation.RemoteException]) {
+            Write-Verbose "Extended error information:"
+            $exception.SerializedRemoteInvocationInfo | ConvertTo-Json | Write-Verbose
+        }
+    }
 
 	('-'*80)
 	"  Remote execution complete."
@@ -107,6 +118,10 @@ param (
 	catch {
 		# Don't fail the deployment if we can't clean up files.
 	}
+
+    if ($exception -ne $null){
+        Write-Error $exception
+    }
 }
 
 # .ExternalHelp  powerdeploy.psm1-help.xml
