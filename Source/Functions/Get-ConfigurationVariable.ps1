@@ -4,15 +4,19 @@ function Get-ConfigurationVariable {
     param (
         [System.Uri]
         [Parameter(Mandatory = $true)]
-        $SettingsPath,
+        $SettingsPath
 
-        [string]
-        [Parameter(ParameterSetName = "Review", Mandatory = $false)]
-        $EnvironmentName,
+        # [string]
+        # [Parameter(Mandatory = $false)]
+        # $EnvironmentName,
 
-        [string]
-        [Parameter(ParameterSetName = "Review", Mandatory = $false)]
-        $Name
+        # [String]
+        # [Parameter(Mandatory = $false)]
+        # $ComputerName,
+
+        # [Switch]
+        # [Parameter(Mandatory = $false)]
+        # $AsHashTable
     )
 
     function New-DeploymentVariable($scope, $scopeName, $dictionary) {
@@ -63,9 +67,9 @@ function Get-ConfigurationVariable {
 
     $results = processPsonSettings($psonPath)
 
-    if (-not [String]::IsNullOrEmpty($EnvironmentName)) {
-        $results = $results | Where-Object { $_.Scope -contains 'Environment' -and $_.ScopeName[0] -eq $EnvironmentName }
-    }
+    # if (-not [String]::IsNullOrEmpty($EnvironmentName)) {
+    #     $results = $results | Where-Object { $_.Scope -contains 'Environment' -and $_.ScopeName[0] -eq $EnvironmentName }
+    # }
 
     $results
 }

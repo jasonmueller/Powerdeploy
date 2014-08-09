@@ -174,32 +174,32 @@ Describe 'Get-ConfigurationVariable' {
 
         $uri = 'file://W:\somedirectory'
 
-        Context 'with an environment name' {
+        # Context 'with an environment name' {
 
-            $settings = Get-ConfigurationVariable -SettingsPath $uri -Environment 'prod'
+        #     $settings = Get-ConfigurationVariable -SettingsPath $uri -Environment 'prod'
 
-            It 'returns only settings scoped to the environment' {
-                $settings | Measure-Object | Select -Expand count | should be 3
-                $settings | ? {
-                    $_.Name -eq 'this' -and `
-                    $_.Value -eq 'that' -and `
-                    ($_.Scope -contains 'Environment') -and `
-                    ($_.ScopeName -contains 'prod')
-                } | Measure-Object | Select -Expand Count | should be 1  
-                $settings | ? {
-                    $_.Name -eq 'this' -and `
-                    $_.Value -eq 'mars' -and `
-                    ($_.Scope -contains 'Environment' -and $_.Scope -contains 'Computer') -and `
-                    ($_.ScopeName -contains 'prod' -and $_.ScopeName -contains 'ROVER1')
-                } | Measure-Object | Select -Expand Count | should be 1  
-                $settings | ? {
-                    $_.Name -eq 'this' -and `
-                    $_.Value -eq 'mars2' -and `
-                    ($_.Scope -contains 'Environment' -and $_.Scope -contains 'Computer') -and `
-                    ($_.ScopeName -contains 'prod' -and $_.ScopeName -contains 'ROVER2')
-                } | Measure-Object | Select -Expand Count | should be 1  
-            }
-        }
+        #     It 'returns only settings scoped to the environment' {
+        #         $settings | Measure-Object | Select -Expand count | should be 3
+        #         $settings | ? {
+        #             $_.Name -eq 'this' -and `
+        #             $_.Value -eq 'that' -and `
+        #             ($_.Scope -contains 'Environment') -and `
+        #             ($_.ScopeName -contains 'prod')
+        #         } | Measure-Object | Select -Expand Count | should be 1  
+        #         $settings | ? {
+        #             $_.Name -eq 'this' -and `
+        #             $_.Value -eq 'mars' -and `
+        #             ($_.Scope -contains 'Environment' -and $_.Scope -contains 'Computer') -and `
+        #             ($_.ScopeName -contains 'prod' -and $_.ScopeName -contains 'ROVER1')
+        #         } | Measure-Object | Select -Expand Count | should be 1  
+        #         $settings | ? {
+        #             $_.Name -eq 'this' -and `
+        #             $_.Value -eq 'mars2' -and `
+        #             ($_.Scope -contains 'Environment' -and $_.Scope -contains 'Computer') -and `
+        #             ($_.ScopeName -contains 'prod' -and $_.ScopeName -contains 'ROVER2')
+        #         } | Measure-Object | Select -Expand Count | should be 1  
+        #     }
+        # }
 
         # Context 'with an environment and computer name' {
 
