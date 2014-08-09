@@ -33,9 +33,10 @@ New-Alias -Name Publish-Package -Value Invoke-Powerdeploy
 
 Export-ModuleMember `
     -Function `
+        Add-ConfigurationVariable, `
+        Get-ConfigurationVariable, `
         Install-Package, `
         Invoke-Powerdeploy, `
-        Get-ConfigurationVariable, `
         Resolve-DeploymentVariable `
     -Alias `
         Publish-Package
