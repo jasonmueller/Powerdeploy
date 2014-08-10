@@ -24,7 +24,7 @@ if (-not (Get-Module Powerdeploy)) {
 
 $configurationVariables = Get-ConfigurationVariable -SettingsPath $SettingsPath
 $applicableVariables = $configurationVariables | `
-    Resolve-DeploymentVariable `
+    Resolve-ConfigurationVariable `
         -EnvironmentName $EnvironmentName `
         -ComputerName $ComputerName `
         -AsHashTable

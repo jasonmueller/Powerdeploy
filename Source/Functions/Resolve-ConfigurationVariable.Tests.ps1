@@ -29,7 +29,7 @@ function New-DeploymentVariable {
     }
 }
 
-Describe 'Resolve-DeploymentVariable, given variables for multiple environments and computers' {
+Describe 'Resolve-ConfigurationVariable, given variables for multiple environments and computers' {
 
     $variables = @()
     $variables += New-DeploymentVariable -Name 'blah' -Value 'blah' -Scope 'Environment' -ScopeName 'prod'
@@ -39,7 +39,7 @@ Describe 'Resolve-DeploymentVariable, given variables for multiple environments 
 
     Context 'with an environment and computer having no overrides' {
 
-        $result = $variables | Resolve-DeploymentVariable -Environment prod -ComputerName rover1
+        $result = $variables | Resolve-ConfigurationVariable -Environment prod -ComputerName rover1
 
         It 'returns only variables for the specified environment' {
             $result | Measure-Object | Select -expand Count | should be 1
@@ -52,7 +52,7 @@ Describe 'Resolve-DeploymentVariable, given variables for multiple environments 
 
     Context 'with an environment and computer having overrides' {
 
-        $result = $variables | Resolve-DeploymentVariable -Environment prod2 -ComputerName rover1
+        $result = $variables | Resolve-ConfigurationVariable -Environment prod2 -ComputerName rover1
 
         It 'returns one value for each variable in the environment' {
             $result | Measure-Object | Select -expand Count | should be 2
@@ -75,7 +75,7 @@ Describe 'Resolve-DeploymentVariable, given variables for multiple environments 
 
     Context 'with an environment and computer having overrides, as a hashtable' {
 
-        $result = $variables | Resolve-DeploymentVariable -Environment prod2 -ComputerName rover1 -AsHashTable
+        $result = $variables | Resolve-ConfigurationVariable -Environment prod2 -ComputerName rover1 -AsHashTable
 
         It 'returns one value for each variable in the environment' {
             $result.Keys | Measure-Object | Select -expand Count | should be 2
