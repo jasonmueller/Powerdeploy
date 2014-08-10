@@ -38,26 +38,4 @@ function Add-ConfigurationVariable {
             -Scope $Scope `
             -ScopeName $ScopeName
     }
-
-    # function New-ConfigurationVariable {
-    #     [CmdletBinding()]
-    #     param (
-    #         [string]
-    #         $Name,
-    #         [string]
-    #         $Value,
-    #         [string[]]
-    #         $Scope,
-    #         [string[]]
-    #         $ScopeName
-    #     )
-    
-    #     New-Object PSObject -Property @{
-    #         Type = 'NameValue'
-    #         Name = $Name
-    #         Value = $Value
-    #         Scope = $Scope
-    #         ScopeName = $ScopeName
-    #     }
-    # }
 }
