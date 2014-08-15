@@ -9,7 +9,7 @@ if (-not ((Get-Module Powerdeploy) -eq $null)) {
 
 Import-Module $modulePath
 
-Describe 'Install-Package, given a test package "TestPackage1"' {
+Describe 'Install-DeploymentPackage, given a test package "TestPackage1"' {
 
     Setup -Dir package
     Setup -Dir temp
@@ -26,7 +26,7 @@ Describe 'Install-Package, given a test package "TestPackage1"' {
         -Version 1.2.3 `
         -OutputDirectoryPath $packageFolder
 
-    Install-Package `
+    Install-DeploymentPackage `
         -PackageArchive $package.FullName `
         -Environment 'acceptance' `
         -Variable @{ 'url' = 'http://suspendedgravity.com'; 'connection' = 'mssql://mydatabase' } `

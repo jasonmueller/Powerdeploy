@@ -31,7 +31,7 @@ Describe 'Invoke-Powerdeploy, with a package archive' {
         Mock GenerateUniqueDeploymentId { "0xtest" }
         Mock SetCurrentPowerDeployCommandSession { }
         Mock ExecuteCommandInSession { &$ScriptBlock }
-        Mock Install-Package { }
+        Mock Install-DeploymentPackage { }
 
         Invoke-Powerdeploy `
             -ComputerName SERVER1 `
@@ -50,11 +50,11 @@ Describe 'Invoke-Powerdeploy, with a package archive' {
 
         It 'runs stage two installation on the target using the deployed module' {
             Assert-MockCalled Import-Module -ParameterFilter { $Name -eq 'c:\target-local\0xtest\scripts\Powerdeploy.psm1' }
-            Assert-MockCalled Install-Package -Exactly 1
+            Assert-MockCalled Install-DeploymentPackage -Exactly 1
         }
 
         It 'installs the package for the specified environment into the specified target path with the target staging directory' {
-            Assert-MockCalled Install-Package -ParameterFilter { 
+            Assert-MockCalled Install-DeploymentPackage -ParameterFilter { 
                 $PackageArchive -eq 'c:\target-local\0xtest\package\somepackage_1.2.3.zip' -and `
                 $Environment -eq 'production' -and `
                 $DeploymentTempRoot -eq 'c:\target-local\0xtest' -and `
@@ -63,7 +63,7 @@ Describe 'Invoke-Powerdeploy, with a package archive' {
         }
 
         It 'includes the post installation script in the stage two installation' {
-            Assert-MockCalled Install-Package -ParameterFilter {
+            Assert-MockCalled Install-DeploymentPackage -ParameterFilter {
                 &$PostInstallScript -eq 'hello'
             }
         }
@@ -80,7 +80,7 @@ Describe 'Invoke-Powerdeploy, with a package archive' {
         Mock GetPackageTempDirectoryAndShareOnTarget { @{ Share = "target-share"; LocalPath = "c:\target-local" }}
         Mock SetCurrentPowerDeployCommandSession { }
         Mock ExecuteCommandInSession { &$ScriptBlock }
-        Mock Install-Package { }
+        Mock Install-DeploymentPackage { }
         Mock GetSettingsFromUri { @{ SomeSetting = 'some-value' } } -ParameterFilter { $uri -eq 'uri://blah/blah' -and $environmentName -eq 'production' -and $computer -eq 'SERVER1' }
 
         Invoke-Powerdeploy `
@@ -91,7 +91,7 @@ Describe 'Invoke-Powerdeploy, with a package archive' {
             -Variable @{"variable1" = "some ad-hoc value"}
 
         It 'includes ad-hoc variables as settings when installing' {
-            Assert-MockCalled Install-Package -ParameterFilter {
+            Assert-MockCalled Install-DeploymentPackage -ParameterFilter {
                 ($Variable).variable1 | should be 'some ad-hoc value'
             }
         }

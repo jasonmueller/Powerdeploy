@@ -2,14 +2,14 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 . $here\..\TestHelpers.ps1
 . $here\..\MimicModule.Tests.ps1
 
-Describe 'Install-Package' {
+Describe 'Install-DeploymentPackage' {
 
     Setup -Dir pdtemp
 
     Mock ExtractPackage { }
     Mock ExecuteInstallation { }
 
-    Install-Package `
+    Install-DeploymentPackage `
         -PackageArchive 'somepackage_1.2.3.zip' `
         -Environment 'production' `
         -DeploymentTempRoot testdrive:\pdtemp `

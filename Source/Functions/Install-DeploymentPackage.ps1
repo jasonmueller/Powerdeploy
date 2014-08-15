@@ -1,4 +1,4 @@
-function Install-Package {
+function Install-DeploymentPackage {
 	# .ExternalHelp  powerdeploy.psm1-help.xml
 	[CmdletBinding()] 
 	param (

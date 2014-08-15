@@ -45,7 +45,7 @@ function Invoke-Powerdeploy {
 	$packageFileName = Split-Path $PackageArchive -Leaf
 	# if (![String]::IsNullOrEmpty($Role)) { $remoteCommand += " -Role $Role" }
 
-	# Build up the Install-Package parameters and convert it to a string
+	# Build up the Install-DeploymentPackage parameters and convert it to a string
 	# that we can send to the target for splatting.  If we don't convert
 	# it to a string, we'll just end up passing the type name (Hashtable)
 	# to the target.
@@ -65,12 +65,12 @@ function Invoke-Powerdeploy {
 		# We will immediately fail remote execution on an error.
 		"`$ErrorActionPreference = 'Stop'",
 
-		# Import Powerdeploy on the target so we can access our Install-Package Cmdlet.
+		# Import Powerdeploy on the target so we can access our Install-DeploymentPackage Cmdlet.
 		"Import-Module '$localPackageTempDir\scripts\Powerdeploy.psm1'",
 
 		# Send our installation parameters variable across and then install the package
 		# splatting in the installation parameters.
-		"`$installParameters = $installParameters; Install-Package @installParameters"
+		"`$installParameters = $installParameters; Install-DeploymentPackage @installParameters"
 	)
 
 	Write-Verbose ('-'*80)

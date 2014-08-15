@@ -35,7 +35,7 @@ Export-ModuleMember `
     -Function `
         Add-ConfigurationVariable, `
         Get-ConfigurationVariable, `
-        Install-Package, `
+        Install-DeploymentPackage, `
         Invoke-Powerdeploy, `
         Resolve-ConfigurationVariable `
     -Alias `
