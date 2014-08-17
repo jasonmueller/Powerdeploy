@@ -31,12 +31,13 @@ Resolve-Path $global:PDRunRoot\Functions\*.ps1 |
 
 New-Alias -Name Publish-Package -Value Invoke-Powerdeploy
 
-Export-ModuleMember `
+ Export-ModuleMember `
     -Function `
-        Add-ConfigurationVariable, `
+        Add-ConfigurationVariable , `
         Get-ConfigurationVariable, `
         Install-DeploymentPackage, `
         Invoke-Powerdeploy, `
+        New-DeploymentPackage, `
         Resolve-ConfigurationVariable `
     -Alias `
         Publish-Package

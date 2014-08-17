@@ -27,9 +27,13 @@ function New-DeploymentPackage {
         $7zip = Resolve-Path $PSScriptRoot\..\Tools\7za.exe
 
         $arguments = "a -r -y `"$archivePath`" `"$source`""
-        Write-Host $arguments
+
         $process = [Diagnostics.Process]::Start($7zip, $arguments)
         $process.WaitForExit()
+    }
+
+    if (-not (Test-Path $SourcePath\content)) {
+        throw 'The package source folder must contain a content folder containing the binaries for the application being packaged.'
     }
 
     $archivePath = [System.IO.Path]::Combine((Resolve-Path $OutputDirectoryPath), "PD_$($PackageName)_$($Version).zip")

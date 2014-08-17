@@ -31,5 +31,9 @@ Whether you're trying to auto deploy an application for the first time or round 
 
 Check out [the documentation][wiki] for more information on how Powerdeploy does what it does and all of the ways it can do more.
 
+## Building Powerdeploy ##
+
+`git submodule update --init`
+
 [PowerShell]: http://technet.microsoft.com/en-us/library/bb978526.aspx
 [wiki]: https://github.com/jasonmueller/Powerdeploy/wiki
