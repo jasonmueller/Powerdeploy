@@ -23,10 +23,6 @@ Whether you're trying to auto deploy an application for the first time or round 
 * Extensible to grow with: Powerdeploy provides extensions, and extensibility that can make even complicated application deployments easy.
 * Independent of other infrastructure and tools: Powerdeploy does not depend on other deployment workflow tools or installation frameworks.  It can be used on its own, from your workstation to deploy an application on demand, or in collaboration with workflow, continuous integration, and continuous deployment tools to provide application deployments in situations where rigorous processes are followed.  
 
-
-![simple process](../powerdeploy/wiki/images/so-simple-process.png
-
-
 ## So Powerful ##
 
 Check out [the documentation][wiki] for more information on how Powerdeploy does what it does and all of the ways it can do more.
